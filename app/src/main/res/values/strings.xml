@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Movie Library</string>
+    <string name="menu">Menu</string>
+    <string name="profile">Profile</string>
+    <string name="home">Home</string>
+    <string name="favorite_films">Favorite films</string>
+</resources>
