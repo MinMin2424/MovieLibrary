@@ -19,12 +19,13 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MovieLibraryTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+//                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+//                    Greeting(
+//                        name = "Android",
+//                        modifier = Modifier.padding(innerPadding)
+//                    )
+//                }
+                MainScreen()
             }
         }
     }

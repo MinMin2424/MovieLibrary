@@ -1,6 +1,8 @@
 package cz.cvut.fel.zan.movielibrary
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -12,7 +14,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
@@ -26,15 +30,19 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import cz.cvut.fel.zan.movielibrary.ui.theme.MovieLibraryTheme
 
 @Preview(showBackground = true, showSystemUi = true)
@@ -52,9 +60,15 @@ fun MainScreen() {
         bottomBar = { BottomBar() },
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
-        MainScreenContent(
-            paddingValues = innerPadding
-        )
+        Box(
+            modifier = Modifier.fillMaxSize()
+                .background(colorResource(R.color.dark_ocean))
+        ) {
+            MainScreenContent(
+                paddingValues = innerPadding
+            )
+        }
+
     }
 }
 
@@ -62,97 +76,144 @@ fun MainScreen() {
 @Composable
 fun TopBar() {
     TopAppBar(
-        title = { Text("Movie library") },
+        title = { Text(
+            text = "Movie library",
+            color = colorResource(R.color.light_pink),
+            fontWeight = FontWeight.Bold,
+            fontSize = 26.sp
+        ) },
         navigationIcon = {
             IconButton(onClick = { /* TODO Open Nav Drawer */ }) {
-                Icon(Icons.Filled.Menu, contentDescription = stringResource(R.string.menu))
+                Icon(
+                    Icons.Filled.Menu,
+                    contentDescription = stringResource(R.string.menu),
+                    tint = colorResource(R.color.light_pink)
+                )
             }
         },
         actions = {
             IconButton(onClick = { /* TODO Open profile */ }) {
-                Icon(Icons.Filled.AccountCircle, contentDescription = stringResource(R.string.profile))
+                Icon(Icons.Filled.AccountCircle,
+                    contentDescription = stringResource(R.string.profile),
+                    tint = colorResource(R.color.light_pink)
+                )
             }
-        }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = colorResource(R.color.purple_blue)
+        )
     )
 }
 
 @Composable
 fun MainScreenContent(paddingValues: PaddingValues) {
-    /* Display list of movies */
-    Column (modifier = Modifier.padding(paddingValues)) {
+    val scrollableColumnState = rememberScrollState()
+
+    Column (
+        modifier = Modifier
+            .padding(paddingValues)
+            .verticalScroll(scrollableColumnState)
+            .fillMaxSize()
+    ) {
         ListMovies()
     }
 }
 
 @Composable
 fun ListMovies() {
-    val titles = listOf( /* TODO */
-    "Alien Romulus", "Film 2", "Film 3",
-    "Film 4", "Film 5", "Film 6",
-    "Film 7", "Film 8", "Film 9"
+    val titles = listOf(
+        /* TODO */
+        "Alien Romulus", "Jurassic World", "Meg 2",
+        "Beast", "Conan", "The Penthouse",
+        "Doraemon", "Love You 7 Times", "Hidden Love",
+        "Titanic", "Love Game", "Dragon Ball"
     )
-//    val pictures = listOf(
-//        R.drawable.alien_romulus, /* TODO */
-//    )
+    val pictures = listOf(
+        R.drawable.alien_romulus, R.drawable.jurassic_world, R.drawable.meg_2,
+        R.drawable.beast, R.drawable.conan, R.drawable.the_penthouse,
+        R.drawable.doraemon, R.drawable.love_you_seven_times, R.drawable.hidden_love,
+        R.drawable.titanic, R.drawable.love_game, R.drawable.dragon_ball
+    )
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
         contentPadding = PaddingValues(8.dp),
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.height(1000.dp)
     ) {
         items(titles.size) { index ->
-            MovieItem(titles[index])
+            MovieItem(titles[index], pictures[index])
         }
     }
 }
 
 @Composable
-fun MovieItem(title : String) {
+fun MovieItem(title : String, picture : Int) {
     Column(
         modifier = Modifier
             .padding(8.dp)
             .width(110.dp)
     ) {
         Image(
-            painter = painterResource(id = R.drawable.alien_romulus),
+            painter = painterResource(id = picture),
             contentDescription = title,
             contentScale = ContentScale.Crop,
             modifier = Modifier
-                .size(110.dp)
+                .size(150.dp)
                 .clip(RoundedCornerShape(12.dp))
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = title,
             textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            color = colorResource(R.color.light_pink)
         )
     }
 }
 
 @Composable
 fun BottomBar() {
-    NavigationBar {
+    NavigationBar(
+        containerColor = colorResource(R.color.purple_blue)
+    ) {
         NavigationBarItem(
             icon = {
-                Icon(Icons.Filled.Home, contentDescription = stringResource(R.string.home))
+                Icon(Icons.Filled.Home,
+                    contentDescription = stringResource(R.string.home),
+                    tint = colorResource(R.color.light_pink)
+                )
             },
-            label = { Text("Home") },
+            label = {
+                Text(text = "Home",
+                    color = colorResource(R.color.light_pink)
+                ) },
             selected = false,
             onClick = {}
         )
         NavigationBarItem(
             icon = {
-                Icon(Icons.Filled.Star, contentDescription = stringResource(R.string.favorite_films))
+                Icon(Icons.Filled.Star,
+                    contentDescription = stringResource(R.string.favorite_films),
+                    tint = colorResource(R.color.light_pink)
+                )
             },
-            label = { Text("Favorite films") },
+            label = {
+                Text(text = "Favorite films",
+                    color = colorResource(R.color.light_pink)
+                ) },
             selected = false,
             onClick = { /* TODO Open Favorite Films Screen */ }
         )
         NavigationBarItem(
             icon = {
-                Icon(Icons.Filled.AccountCircle, contentDescription = stringResource(R.string.profile))
+                Icon(Icons.Filled.AccountCircle,
+                    contentDescription = stringResource(R.string.profile),
+                    tint = colorResource(R.color.light_pink)
+                )
             },
-            label = { Text("User profile") },
+            label = {
+                Text(text = "User profile",
+                    color = colorResource(R.color.light_pink)
+                ) },
             selected = false,
             onClick = { /* TODO Open User Profile Screen */ }
         )
