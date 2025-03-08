@@ -13,8 +13,15 @@ class MainActivity : ComponentActivity() {
         setContent {
             MovieLibraryTheme {
 //                MainScreen()
-                DescriptionScreen(
-                    Doraemon()
+//                DescriptionScreen(
+//                    Doraemon()
+//                )
+                FavoriteScreen(
+//                    favoriteMovies = emptyList()
+                    favoriteMovies = listOf(
+                        Doraemon(),
+                        Conan()
+                    )
                 )
             }
         }
@@ -35,6 +42,24 @@ fun Doraemon() : MovieInfo {
             "The animation and storytelling are amazing. It's nostalgic yet fresh at the same time.",
             "Doraemon's gadgets are always fascinating. They spark the imagination of both kids and adults!",
             "This movie perfectly captures the essence of childhood dreams and friendships. A must-watch!"
+        )
+    )
+}
+
+fun Conan() : MovieInfo {
+    return MovieInfo(
+        movieTitle = "Detective Conan",
+        movieImage = R.drawable.conan,
+        rating = "4,5/5",
+        episodes = 1100,
+        country = "Japan",
+        description = "The series intricately weaves mystery, suspense, and action, captivating audiences with its clever plotlines and character development. Each episode presents a unique case, showcasing Conan's deductive prowess as he navigates challenges posed by criminals and the enigmatic Black Organization.",
+        comments = listOf(
+            "Detective Conan offers a perfect blend of mystery and adventure. Each episode keeps you guessing until the end.",
+            "The character development in this series is exceptional. Watching Conan's journey is truly engaging.",
+            "With over a thousand episodes, Detective Conan maintains its quality and continues to surprise its audience.",
+            "The intricate cases and clever resolutions make this series a must-watch for mystery enthusiasts.",
+            "Detective Conan's ability to intertwine long-term story arcs with standalone episodes keeps the narrative fresh and exciting."
         )
     )
 }

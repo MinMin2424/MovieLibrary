@@ -1,9 +1,10 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package cz.cvut.fel.zan.movielibrary
 
 import androidx.compose.material3.Button
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -16,8 +17,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -25,6 +26,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,14 +48,8 @@ import cz.cvut.fel.zan.movielibrary.ui.theme.MovieLibraryTheme
 fun DescriptionScreenPreview() {
     MovieLibraryTheme {
         DescriptionScreen(
-            MovieInfo(
-                movieTitle  = "Doraemon",
-                movieImage = R.drawable.doraemon,
-                rating = "5/5",
-                episodes = 2300,
-                country = "Japan",
-                description = "Doraemon is a Japanese anime series created by Fujiko F. Fujio in 1969. It follows the adventures of a robotic cat from the 22nd century who travels back in time to assist a young boy named Nobita Nobi. Using various futuristic gadgets from his four-dimensional pocket, Doraemon helps Nobita navigate the challenges and mishaps he encounters. The series is renowned for its entertaining yet educational content, capturing the hearts of audiences across multiple generations."
-            )
+//            Doraemon()
+            Conan()
         )
     }
 }
@@ -60,7 +57,7 @@ fun DescriptionScreenPreview() {
 @Composable
 fun DescriptionScreen(movieInfo: MovieInfo) {
     Scaffold (
-        topBar = { TopBarMainScreen() },
+        topBar = { TopBarDescriptionScreen() },
         bottomBar = { BottomBarMainScreen() },
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
@@ -82,15 +79,13 @@ fun DescriptionScreenContent(
     paddingValues: PaddingValues,
     movieInfo: MovieInfo
 ) {
-
     LazyColumn(
         modifier = Modifier
             .padding(paddingValues)
             .fillMaxSize()
     ) {
         item {
-            RenderSubNavigation()
-//            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(32.dp))
             RenderImage(movieInfo.movieImage, movieInfo.movieTitle)
             Spacer(modifier = Modifier.height(16.dp))
             RenderTitle(movieInfo.movieTitle)
@@ -100,35 +95,6 @@ fun DescriptionScreenContent(
             RenderDescription(movieInfo.description)
             Spacer(modifier = Modifier.height(16.dp))
             RenderComments(movieInfo.comments)
-        }
-    }
-}
-
-@Composable
-fun RenderSubNavigation() {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 5.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        IconButton(
-            onClick = { /* TODO */ }
-        ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                contentDescription = stringResource(R.string.navigate_back),
-                tint = colorResource(R.color.white)
-            )
-        }
-        IconButton(
-            onClick = { /*TODO*/ }
-        ) {
-            Icon(
-                imageVector = Icons.Filled.Star,
-                contentDescription = stringResource(R.string.add_to_favourites),
-                tint = colorResource(R.color.white)
-            )
         }
     }
 }
@@ -263,6 +229,39 @@ fun RenderComments(comments: List<String>) {
             )
         }
     }
+}
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TopBarDescriptionScreen() {
+    TopAppBar(
+        title = { Text(
+            text = "Movie library",
+            color = colorResource(R.color.white),
+            fontWeight = FontWeight.Bold,
+            fontSize = 26.sp
+        ) },
+        navigationIcon = {
+            IconButton(onClick = { /* TODO Go back */ }) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                    contentDescription = stringResource(R.string.navigate_back),
+                    tint = colorResource(R.color.white)
+                )
+            }
+        },
+        actions = {
+            IconButton(onClick = { /* TODO Add movie to favorites */ }) {
+                Icon(
+                    imageVector = Icons.Filled.Star,
+                    contentDescription = stringResource(R.string.add_to_favourites),
+                    tint = colorResource(R.color.white)
+                )
+            }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = colorResource(R.color.purple_blue)
+        )
+    )
 }
 

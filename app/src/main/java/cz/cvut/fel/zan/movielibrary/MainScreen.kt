@@ -87,7 +87,7 @@ fun TopBarMainScreen() {
                 Icon(
                     Icons.Filled.Menu,
                     contentDescription = stringResource(R.string.menu),
-                    tint = colorResource(R.color.light_pink)
+                    tint = colorResource(R.color.white)
                 )
             }
         },
