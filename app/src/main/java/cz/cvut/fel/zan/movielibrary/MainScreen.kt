@@ -56,8 +56,8 @@ fun MainScreenPreview() {
 @Composable
 fun MainScreen() {
     Scaffold (
-        topBar = { TopBar() },
-        bottomBar = { BottomBar() },
+        topBar = { TopBarMainScreen() },
+        bottomBar = { BottomBarMainScreen() },
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
         Box(
@@ -74,11 +74,11 @@ fun MainScreen() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar() {
+fun TopBarMainScreen() {
     TopAppBar(
         title = { Text(
             text = "Movie library",
-            color = colorResource(R.color.light_pink),
+            color = colorResource(R.color.white),
             fontWeight = FontWeight.Bold,
             fontSize = 26.sp
         ) },
@@ -95,7 +95,7 @@ fun TopBar() {
             IconButton(onClick = { /* TODO Open profile */ }) {
                 Icon(Icons.Filled.AccountCircle,
                     contentDescription = stringResource(R.string.profile),
-                    tint = colorResource(R.color.light_pink)
+                    tint = colorResource(R.color.white)
                 )
             }
         },
@@ -107,12 +107,12 @@ fun TopBar() {
 
 @Composable
 fun MainScreenContent(paddingValues: PaddingValues) {
-    val scrollableColumnState = rememberScrollState()
+//    val scrollableColumnState = rememberScrollState()
 
     Column (
         modifier = Modifier
             .padding(paddingValues)
-            .verticalScroll(scrollableColumnState)
+//            .verticalScroll(scrollableColumnState)
             .fillMaxSize()
     ) {
         ListMovies()
@@ -165,13 +165,13 @@ fun MovieItem(title : String, picture : Int) {
             text = title,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth(),
-            color = colorResource(R.color.light_pink)
+            color = colorResource(R.color.white)
         )
     }
 }
 
 @Composable
-fun BottomBar() {
+fun BottomBarMainScreen() {
     NavigationBar(
         containerColor = colorResource(R.color.purple_blue)
     ) {
@@ -179,12 +179,12 @@ fun BottomBar() {
             icon = {
                 Icon(Icons.Filled.Home,
                     contentDescription = stringResource(R.string.home),
-                    tint = colorResource(R.color.light_pink)
+                    tint = colorResource(R.color.white)
                 )
             },
             label = {
                 Text(text = "Home",
-                    color = colorResource(R.color.light_pink)
+                    color = colorResource(R.color.white)
                 ) },
             selected = false,
             onClick = {}
@@ -193,12 +193,12 @@ fun BottomBar() {
             icon = {
                 Icon(Icons.Filled.Star,
                     contentDescription = stringResource(R.string.favorite_films),
-                    tint = colorResource(R.color.light_pink)
+                    tint = colorResource(R.color.white)
                 )
             },
             label = {
                 Text(text = "Favorite films",
-                    color = colorResource(R.color.light_pink)
+                    color = colorResource(R.color.white)
                 ) },
             selected = false,
             onClick = { /* TODO Open Favorite Films Screen */ }
@@ -207,12 +207,12 @@ fun BottomBar() {
             icon = {
                 Icon(Icons.Filled.AccountCircle,
                     contentDescription = stringResource(R.string.profile),
-                    tint = colorResource(R.color.light_pink)
+                    tint = colorResource(R.color.white)
                 )
             },
             label = {
                 Text(text = "User profile",
-                    color = colorResource(R.color.light_pink)
+                    color = colorResource(R.color.white)
                 ) },
             selected = false,
             onClick = { /* TODO Open User Profile Screen */ }
