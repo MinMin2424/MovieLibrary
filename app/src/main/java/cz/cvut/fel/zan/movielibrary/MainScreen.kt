@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -21,6 +22,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -61,7 +63,8 @@ fun MainScreen() {
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
         Box(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
                 .background(colorResource(R.color.dark_ocean))
         ) {
             MainScreenContent(
@@ -121,8 +124,10 @@ fun MainScreenContent(paddingValues: PaddingValues) {
 
 @Composable
 fun ListMovies() {
-    val titles = listOf(
-        /* TODO */
+    val movies = GetAllMovies()
+
+    /*val titles = listOf(
+        *//* TODO *//*
         "Alien Romulus", "Jurassic World", "Meg 2",
         "Beast", "Conan", "The Penthouse",
         "Doraemon", "Love You 7 Times", "Hidden Love",
@@ -133,14 +138,14 @@ fun ListMovies() {
         R.drawable.beast, R.drawable.conan, R.drawable.the_penthouse,
         R.drawable.doraemon, R.drawable.love_you_seven_times, R.drawable.hidden_love,
         R.drawable.titanic, R.drawable.love_game, R.drawable.dragon_ball
-    )
+    )*/
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
         contentPadding = PaddingValues(8.dp),
         modifier = Modifier.height(1000.dp)
     ) {
-        items(titles.size) { index ->
-            MovieItem(titles[index], pictures[index])
+        items(movies) {movie ->
+            MovieItem(title = movie.movieTitle, picture = movie.movieImage)
         }
     }
 }
@@ -188,6 +193,20 @@ fun BottomBarMainScreen() {
                 ) },
             selected = false,
             onClick = {}
+        )
+        NavigationBarItem(
+            icon = {
+                Icon(Icons.Filled.Search,
+                    contentDescription = stringResource(R.string.genre),
+                    tint = colorResource(R.color.white)
+                )
+            },
+            label = {
+                Text(text = "Genres",
+                    color = colorResource(R.color.white)
+                ) },
+            selected = false,
+            onClick = { /* TODO Open List Genres Screen */ }
         )
         NavigationBarItem(
             icon = {

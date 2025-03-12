@@ -137,6 +137,8 @@ fun RenderTitle(movieTitle: String) {
 
 @Composable
 fun RenderInfo(movieInfo: MovieInfo) {
+    val genresFormatted = movieInfo.genre
+        .joinToString(", ") { it.name.lowercase() }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -148,6 +150,10 @@ fun RenderInfo(movieInfo: MovieInfo) {
         Spacer(modifier = Modifier.height(4.dp))
         Text (
             text = "Episodes: ${movieInfo.episodes}",
+            color = colorResource(R.color.white),)
+        Spacer(modifier = Modifier.height(4.dp))
+        Text (
+            text = "Genres: $genresFormatted",
             color = colorResource(R.color.white),)
         Spacer(modifier = Modifier.height(4.dp))
         Text (
