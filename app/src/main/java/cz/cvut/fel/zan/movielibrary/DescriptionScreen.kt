@@ -48,8 +48,8 @@ import cz.cvut.fel.zan.movielibrary.ui.theme.MovieLibraryTheme
 fun DescriptionScreenPreview() {
     MovieLibraryTheme {
         DescriptionScreen(
-//            Doraemon()
-            Conan()
+            Doraemon()
+//            Conan()
         )
     }
 }

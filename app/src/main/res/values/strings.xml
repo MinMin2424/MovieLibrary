@@ -8,4 +8,6 @@
     <string name="navigate_back">Navigate back</string>
     <string name="description">Description</string>
     <string name="comments">Comments</string>
+    <string name="profile_picture">Profile picture</string>
+    <string name="edit_profile">Edit profile</string>
 </resources>

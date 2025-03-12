@@ -205,7 +205,8 @@ fun BottomBarMainScreen() {
         )
         NavigationBarItem(
             icon = {
-                Icon(Icons.Filled.AccountCircle,
+                Icon(
+                    Icons.Filled.AccountCircle,
                     contentDescription = stringResource(R.string.profile),
                     tint = colorResource(R.color.white)
                 )

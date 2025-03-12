@@ -13,16 +13,24 @@ class MainActivity : ComponentActivity() {
         setContent {
             MovieLibraryTheme {
 //                MainScreen()
-//                DescriptionScreen(
-//                    Doraemon()
-//                )
-                FavoriteScreen(
-//                    favoriteMovies = emptyList()
-                    favoriteMovies = listOf(
-                        Doraemon(),
-                        Conan()
-                    )
+                DescriptionScreen(
+                    Doraemon()
                 )
+//                FavoriteScreen(
+////                    favoriteMovies = emptyList()
+//                    favoriteMovies = listOf(
+//                        Doraemon(),
+//                        Conan()
+//                    )
+//                )
+                /*ProfileScreen(
+                    UserInfo(
+                        name = "MinMin Tranova",
+                        email = "goldenmaknae2424@gmail.com",
+                        profileImage = R.drawable.profile_picture,
+                        registrationDate = "04.03.2025"
+                    )
+                )*/
             }
         }
     }
