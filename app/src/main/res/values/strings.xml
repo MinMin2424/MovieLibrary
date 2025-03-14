@@ -11,4 +11,7 @@
     <string name="profile_picture">Profile picture</string>
     <string name="edit_profile">Edit profile</string>
     <string name="genre">Genre</string>
+    <string name="adding_movie">Adding movie</string>
+    <string name="send">Send</string>
+    <string name="remove">Remove</string>
 </resources>

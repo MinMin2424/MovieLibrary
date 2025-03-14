@@ -30,24 +30,17 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import cz.cvut.fel.zan.movielibrary.ui.theme.MovieLibraryTheme
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun ListGenresScreenPreview() {
-    MovieLibraryTheme {
-        ListGenresScreen()
-    }
-}
+import androidx.navigation.NavController
 
 @Composable
-fun ListGenresScreen() {
+fun ListGenresScreen(
+    navController: NavController
+) {
     Scaffold (
-        topBar = { TopBarMainScreen() },
-        bottomBar = { BottomBarMainScreen() },
+        topBar = { TopBarMainScreen(navController) },
+        bottomBar = { BottomBarMainScreen(navController) },
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
         Box(
@@ -58,7 +51,6 @@ fun ListGenresScreen() {
                 paddingValues = innerPadding
             )
         }
-
     }
 }
 
@@ -109,9 +101,7 @@ fun ListGenreScreenContent(paddingValues: PaddingValues) {
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                 }
-
             }
-
         }
     }
 }

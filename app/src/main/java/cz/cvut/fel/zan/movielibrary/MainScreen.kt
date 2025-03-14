@@ -2,6 +2,7 @@ package cz.cvut.fel.zan.movielibrary
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -15,9 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
@@ -34,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -42,24 +42,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import cz.cvut.fel.zan.movielibrary.ui.theme.MovieLibraryTheme
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun MainScreenPreview() {
-    MovieLibraryTheme {
-        MainScreen()
-    }
-}
+import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 
 @Composable
-fun MainScreen() {
+fun MainScreen(
+    navController: NavController
+) {
     Scaffold (
-        topBar = { TopBarMainScreen() },
-        bottomBar = { BottomBarMainScreen() },
+        topBar = { TopBarMainScreen(navController) },
+        bottomBar = { BottomBarMainScreen(navController) },
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
         Box(
@@ -68,16 +62,18 @@ fun MainScreen() {
                 .background(colorResource(R.color.dark_ocean))
         ) {
             MainScreenContent(
-                paddingValues = innerPadding
+                paddingValues = innerPadding,
+                navController = navController
             )
         }
-
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBarMainScreen() {
+fun TopBarMainScreen(
+    navController: NavController
+) {
     TopAppBar(
         title = { Text(
             text = "Movie library",
@@ -95,7 +91,10 @@ fun TopBarMainScreen() {
             }
         },
         actions = {
-            IconButton(onClick = { /* TODO Open profile */ }) {
+            IconButton(onClick = {
+                /*  Open profile */
+                navController.navigate(Routes.Profile.route)
+            }) {
                 Icon(Icons.Filled.AccountCircle,
                     contentDescription = stringResource(R.string.profile),
                     tint = colorResource(R.color.white)
@@ -109,57 +108,54 @@ fun TopBarMainScreen() {
 }
 
 @Composable
-fun MainScreenContent(paddingValues: PaddingValues) {
-//    val scrollableColumnState = rememberScrollState()
-
+fun MainScreenContent(
+    paddingValues: PaddingValues,
+    navController: NavController
+) {
     Column (
         modifier = Modifier
             .padding(paddingValues)
-//            .verticalScroll(scrollableColumnState)
             .fillMaxSize()
     ) {
-        ListMovies()
+        ListMovies(navController)
     }
 }
 
 @Composable
-fun ListMovies() {
+fun ListMovies(
+    navController: NavController
+) {
     val movies = GetAllMovies()
-
-    /*val titles = listOf(
-        *//* TODO *//*
-        "Alien Romulus", "Jurassic World", "Meg 2",
-        "Beast", "Conan", "The Penthouse",
-        "Doraemon", "Love You 7 Times", "Hidden Love",
-        "Titanic", "Love Game", "Dragon Ball"
-    )
-    val pictures = listOf(
-        R.drawable.alien_romulus, R.drawable.jurassic_world, R.drawable.meg_2,
-        R.drawable.beast, R.drawable.conan, R.drawable.the_penthouse,
-        R.drawable.doraemon, R.drawable.love_you_seven_times, R.drawable.hidden_love,
-        R.drawable.titanic, R.drawable.love_game, R.drawable.dragon_ball
-    )*/
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
         contentPadding = PaddingValues(8.dp),
         modifier = Modifier.height(1000.dp)
     ) {
         items(movies) {movie ->
-            MovieItem(title = movie.movieTitle, picture = movie.movieImage)
+            MovieItem(
+                movieInfo = movie,
+                navController = navController
+            )
         }
     }
 }
 
 @Composable
-fun MovieItem(title : String, picture : Int) {
+fun MovieItem(
+    movieInfo: MovieInfo,
+    navController: NavController
+) {
     Column(
         modifier = Modifier
             .padding(8.dp)
             .width(110.dp)
+            .clickable {
+                navController.navigate("${Routes.Description.route}/${movieInfo.movieId}")
+            }
     ) {
         Image(
-            painter = painterResource(id = picture),
-            contentDescription = title,
+            painter = painterResource(id = movieInfo.movieImage),
+            contentDescription = movieInfo.movieTitle,
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .size(150.dp)
@@ -167,7 +163,7 @@ fun MovieItem(title : String, picture : Int) {
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
-            text = title,
+            text = movieInfo.movieTitle,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth(),
             color = colorResource(R.color.white)
@@ -176,7 +172,13 @@ fun MovieItem(title : String, picture : Int) {
 }
 
 @Composable
-fun BottomBarMainScreen() {
+fun BottomBarMainScreen(
+    navController: NavController
+) {
+
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
     NavigationBar(
         containerColor = colorResource(R.color.purple_blue)
     ) {
@@ -191,8 +193,13 @@ fun BottomBarMainScreen() {
                 Text(text = "Home",
                     color = colorResource(R.color.white)
                 ) },
-            selected = false,
-            onClick = {}
+            selected = currentRoute == Routes.Main.route,
+            onClick = {
+                navController.navigate(Routes.Main.route) {
+                    popUpTo(navController.graph.startDestinationId)
+                    launchSingleTop = true
+                }
+            }
         )
         NavigationBarItem(
             icon = {
@@ -205,8 +212,14 @@ fun BottomBarMainScreen() {
                 Text(text = "Genres",
                     color = colorResource(R.color.white)
                 ) },
-            selected = false,
-            onClick = { /* TODO Open List Genres Screen */ }
+            selected = currentRoute == Routes.ListGenres.route,
+            onClick = {
+                /* Open List Genres Screen */
+                navController.navigate(Routes.ListGenres.route) {
+                    popUpTo(navController.graph.startDestinationId)
+                    launchSingleTop = true
+                }
+            }
         )
         NavigationBarItem(
             icon = {
@@ -219,8 +232,14 @@ fun BottomBarMainScreen() {
                 Text(text = "Favorite films",
                     color = colorResource(R.color.white)
                 ) },
-            selected = false,
-            onClick = { /* TODO Open Favorite Films Screen */ }
+            selected = currentRoute == Routes.FavoriteMovies.route,
+            onClick = {
+                /* Open Favorite Films Screen */
+                navController.navigate(Routes.FavoriteMovies.route) {
+                    popUpTo(navController.graph.startDestinationId)
+                    launchSingleTop = true
+                }
+            }
         )
         NavigationBarItem(
             icon = {
@@ -234,8 +253,14 @@ fun BottomBarMainScreen() {
                 Text(text = "User profile",
                     color = colorResource(R.color.white)
                 ) },
-            selected = false,
-            onClick = { /* TODO Open User Profile Screen */ }
+            selected = currentRoute == Routes.Profile.route,
+            onClick = {
+                /* Open User Profile Screen */
+                navController.navigate(Routes.Profile.route) {
+                    popUpTo(navController.graph.startDestinationId)
+                    launchSingleTop = true
+                }
+            }
         )
     }
 }

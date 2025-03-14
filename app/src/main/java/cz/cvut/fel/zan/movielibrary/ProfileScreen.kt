@@ -2,14 +2,17 @@ package cz.cvut.fel.zan.movielibrary
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -39,37 +42,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.material3.Button
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import cz.cvut.fel.zan.movielibrary.ui.theme.MovieLibraryTheme
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun ProfileScreenPreview() {
-    MovieLibraryTheme {
-        ProfileScreen(
-            UserInfo(
-                name = "MinMin Tranova",
-                email = "goldenmaknae2424@gmail.com",
-                profileImage = R.drawable.profile_picture,
-                registrationDate = "04.03.2025"
-            ),
-//            onEditInfo = { newName, newEmail ->
-//
-//            }
-        )
-    }
-}
+import androidx.navigation.NavController
 
 @Composable
 fun ProfileScreen(
     userInfo: UserInfo,
+    navController: NavController
 //    onEditInfo: (String, String) -> Unit
 ) {
     Scaffold (
         topBar = { TopBarProfileScreen() },
-        bottomBar = { BottomBarMainScreen() },
+        bottomBar = { BottomBarMainScreen(navController) },
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
         Box(
@@ -93,7 +78,7 @@ fun ProfileScreenContent(
 //    onEditInfo: (String, String) -> Unit
 ) {
 
-    var isEditing by remember { mutableStateOf(true) }
+    var isEditing by remember { mutableStateOf(false) }
     var editedName by remember { mutableStateOf(userInfo.name) }
     var editedEmail by remember { mutableStateOf(userInfo.email) }
 
@@ -166,13 +151,36 @@ fun ProfileScreenContent(
                     value = userInfo.commentsCount.toString()
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                Button(
-                    onClick = { /* TODO Save changes or edit info */ },
-                    modifier = Modifier.fillMaxWidth()
-                        .padding(32.dp)
-                ) {
-                    Text(text = if (isEditing) "Save changes" else "Edit info")
+                if (isEditing) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(32.dp),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        Button(
+                            onClick = { /* TODO Save changes */ },
+                            modifier = Modifier.width(150.dp)
+                        ) {
+                            Text(text = "Save changes")
+                        }
+                        Button(
+                            onClick = { /* TODO Cancel changes */ },
+                            modifier = Modifier.width(150.dp)
+                        ) {
+                            Text(text = "Cancel")
+                        }
+                    }
+                } else {
+                    Button(
+                        onClick = { /* TODO Edit info */ },
+                        modifier = Modifier.fillMaxWidth()
+                            .padding(32.dp)
+                    ) {
+                        Text(text = "Edit info")
+                    }
                 }
+
             }
         }
     }

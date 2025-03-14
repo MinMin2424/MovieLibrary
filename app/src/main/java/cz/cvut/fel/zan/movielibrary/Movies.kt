@@ -19,6 +19,7 @@ fun GetAllMovies() : List<MovieInfo> {
 
 fun Alien_Romulus() : MovieInfo {
     return MovieInfo(
+        movieId = 1,
         movieTitle = "Alien Romulus",
         movieImage = R.drawable.alien_romulus,
         rating = "5/5",
@@ -36,6 +37,7 @@ fun Alien_Romulus() : MovieInfo {
 
 fun Jurassic_World() : MovieInfo {
     return MovieInfo(
+        movieId = 2,
         movieTitle = "Jurassic World: Dominion",
         movieImage = R.drawable.jurassic_world,
         rating = "3,5/5",
@@ -55,6 +57,7 @@ fun Jurassic_World() : MovieInfo {
 
 fun Meg2() : MovieInfo {
     return MovieInfo(
+        movieId = 3,
         movieTitle = "Meg 2",
         movieImage = R.drawable.meg_2,
         rating = "4/5",
@@ -76,6 +79,7 @@ fun Meg2() : MovieInfo {
 
 fun Beast() : MovieInfo {
     return MovieInfo(
+        movieId = 4,
         movieTitle = "Beast",
         movieImage = R.drawable.beast,
         rating = "5/5",
@@ -97,6 +101,7 @@ fun Beast() : MovieInfo {
 
 fun Conan() : MovieInfo {
     return MovieInfo(
+        movieId = 5,
         movieTitle = "Detective Conan",
         movieImage = R.drawable.conan,
         rating = "4,5/5",
@@ -116,6 +121,7 @@ fun Conan() : MovieInfo {
 
 fun The_Penthouse() : MovieInfo {
     return MovieInfo(
+        movieId = 6,
         movieTitle = "The Penthouse",
         movieImage = R.drawable.the_penthouse,
         rating = "5/5",
@@ -137,6 +143,7 @@ fun The_Penthouse() : MovieInfo {
 
 fun Doraemon() : MovieInfo {
     return MovieInfo(
+        movieId = 7,
         movieTitle  = "Doraemon",
         movieImage = R.drawable.doraemon,
         rating = "5/5",
@@ -156,6 +163,7 @@ fun Doraemon() : MovieInfo {
 
 fun Love_U_7_Times() : MovieInfo {
     return MovieInfo(
+        movieId = 8,
         movieTitle = "Love you 7 times",
         movieImage = R.drawable.love_you_seven_times,
         rating = "3/5",
@@ -174,6 +182,7 @@ fun Love_U_7_Times() : MovieInfo {
 
 fun Hidden_Love() : MovieInfo {
     return MovieInfo(
+        movieId = 9,
         movieTitle = "Hidden Love",
         movieImage = R.drawable.hidden_love,
         rating = "3/5",
@@ -193,6 +202,7 @@ fun Hidden_Love() : MovieInfo {
 
 fun Titanic() : MovieInfo {
     return MovieInfo(
+        movieId = 10,
         movieTitle = "Titanic",
         movieImage = R.drawable.titanic,
         rating = "5/5",
@@ -210,6 +220,7 @@ fun Titanic() : MovieInfo {
 
 fun Love_Game() : MovieInfo {
     return MovieInfo(
+        movieId = 11,
         movieTitle = "Love Game in Eastern Fantasy",
         movieImage = R.drawable.love_game,
         rating = "5/5",
@@ -228,6 +239,7 @@ fun Love_Game() : MovieInfo {
 
 fun Dragon_Ball() : MovieInfo {
     return MovieInfo(
+        movieId = 12,
         movieTitle = "Dragon Ball",
         movieImage = R.drawable.dragon_ball,
         rating = "5/5",

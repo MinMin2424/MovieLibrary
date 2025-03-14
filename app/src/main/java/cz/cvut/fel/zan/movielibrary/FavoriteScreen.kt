@@ -38,37 +38,22 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role.Companion.Button
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import cz.cvut.fel.zan.movielibrary.ui.theme.MovieLibraryTheme
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun FavoriteScreenPreview() {
-    MovieLibraryTheme {
-        FavoriteScreen(
-//            favoriteMovies = emptyList()
-            favoriteMovies = listOf(
-                Doraemon(),
-                Conan()
-            )
-        )
-    }
-}
+import androidx.navigation.NavController
 
 @Composable
 fun FavoriteScreen(
     favoriteMovies: List<MovieInfo>,
+    navController: NavController
 //    onRemoveFavorite: (MovieInfo) -> Unit
 ) {
     Scaffold (
-        topBar = { TopBarFavoriteScreen() },
-        bottomBar = { BottomBarMainScreen() },
+        topBar = { TopBarFavoriteScreen(navController) },
+        bottomBar = { BottomBarMainScreen(navController) },
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
         Box(
@@ -77,7 +62,7 @@ fun FavoriteScreen(
                 .background(colorResource(R.color.dark_ocean))
         ) {
             if (favoriteMovies.isEmpty()) {
-                RenderEmptyListMovies(innerPadding)
+                RenderEmptyListMovies()
             } else {
                 RenderListMovies(innerPadding, favoriteMovies)
             }
@@ -86,7 +71,7 @@ fun FavoriteScreen(
 }
 
 @Composable
-fun RenderEmptyListMovies(paddingValues: PaddingValues) {
+fun RenderEmptyListMovies() {
     Box(
         modifier = Modifier
             .padding(vertical = 150.dp)
@@ -116,7 +101,7 @@ fun RenderEmptyListMovies(paddingValues: PaddingValues) {
             Spacer(modifier = Modifier.height(40.dp))
             Icon(
                 painter = painterResource(R.drawable.add_circle),
-                contentDescription = "Adding movie",
+                contentDescription = stringResource(R.string.adding_movie),
                 tint = Color.Gray,
                 modifier = Modifier
                     .size(64.dp)
@@ -184,7 +169,7 @@ fun FavoriteMovieItem(movieInfo: MovieInfo) {
                 Button(
                     onClick = { /* TODO Remove movie from favorites */ }
                 ) {
-                    Text("Remove")
+                    Text(stringResource(R.string.remove))
                 }
             }
         }
@@ -193,7 +178,9 @@ fun FavoriteMovieItem(movieInfo: MovieInfo) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBarFavoriteScreen() {
+fun TopBarFavoriteScreen(
+    navController: NavController
+) {
     TopAppBar(
         title = { Text(
             text = "Favorite movies",
@@ -211,7 +198,10 @@ fun TopBarFavoriteScreen() {
             }
         },
         actions = {
-            IconButton(onClick = { /* TODO Open profile */ }) {
+            IconButton(onClick = {
+                /* Open profile */
+                navController.navigate(Routes.Profile.route)
+            }) {
                 Icon(
                     Icons.Filled.AccountCircle,
                     contentDescription = stringResource(R.string.profile),

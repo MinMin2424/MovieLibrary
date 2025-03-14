@@ -1,6 +1,7 @@
 package cz.cvut.fel.zan.movielibrary
 
 data class MovieInfo(
+    val movieId : Int = 0,
     val movieTitle : String = "",
     val movieImage : Int = 0,
     val rating : String = "",

@@ -41,24 +41,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import cz.cvut.fel.zan.movielibrary.ui.theme.MovieLibraryTheme
 
-@Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun DescriptionScreenPreview() {
-    MovieLibraryTheme {
-        DescriptionScreen(
-            Doraemon()
-//            Conan()
-        )
-    }
-}
-
-@Composable
-fun DescriptionScreen(movieInfo: MovieInfo) {
+fun DescriptionScreen(
+    movieInfo: MovieInfo,
+    navController: NavController
+) {
     Scaffold (
-        topBar = { TopBarDescriptionScreen() },
-        bottomBar = { BottomBarMainScreen() },
+        topBar = { TopBarDescriptionScreen(navController) },
+        bottomBar = { BottomBarMainScreen(navController) },
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
         Box(
@@ -214,9 +207,8 @@ fun RenderComments(comments: List<String>) {
             Spacer(modifier = Modifier.weight(1f))
             Button(
                 onClick = { /* TODO */ },
-
-                ) {
-                Text("Send")
+            ) {
+                Text(stringResource(R.string.send))
             }
         }
         Spacer(modifier = Modifier.height(8.dp))
@@ -239,7 +231,9 @@ fun RenderComments(comments: List<String>) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBarDescriptionScreen() {
+fun TopBarDescriptionScreen(
+    navController: NavController
+) {
     TopAppBar(
         title = { Text(
             text = "Movie library",
@@ -248,7 +242,10 @@ fun TopBarDescriptionScreen() {
             fontSize = 26.sp
         ) },
         navigationIcon = {
-            IconButton(onClick = { /* TODO Go back */ }) {
+            IconButton(onClick = {
+                /* TODO Go back */
+                navController.popBackStack()
+            }) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Default.ArrowBack,
                     contentDescription = stringResource(R.string.navigate_back),
