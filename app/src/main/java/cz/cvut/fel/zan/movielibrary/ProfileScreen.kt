@@ -17,6 +17,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -49,11 +50,24 @@ import androidx.navigation.NavController
 @Composable
 fun ProfileScreen(
     userInfo: UserInfo,
-    navController: NavController
-//    onEditInfo: (String, String) -> Unit
+    navController: NavController,
+    onEditInfo: (String, String) -> Unit
 ) {
+
+    var isEditing by remember { mutableStateOf(false) }
+    var editedName by remember { mutableStateOf(userInfo.name) }
+    var editedEmail by remember { mutableStateOf(userInfo.email) }
+
     Scaffold (
-        topBar = { TopBarProfileScreen() },
+        topBar = { TopBarProfileScreen(
+            isEditing = isEditing,
+            onEditClick = { isEditing = true },
+            onCancelClick = {
+                isEditing = false
+                editedName = userInfo.name
+                editedEmail = userInfo.email
+            }
+        ) },
         bottomBar = { BottomBarMainScreen(navController) },
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
@@ -64,8 +78,23 @@ fun ProfileScreen(
         ) {
             ProfileScreenContent(
                 paddingValues = innerPadding,
-                userInfo,
-//                onEditInfo
+                userInfo = userInfo,
+                isEditing = isEditing,
+                editedName = editedName,
+                editedEmail = editedEmail,
+                onNameChange = { editedName = it },
+                onEmailChange = { editedEmail = it },
+                onSaveChanges = {
+                    onEditInfo(editedName, editedEmail)
+                    isEditing = false
+                },
+                onCancelChanges = {
+                    isEditing = false
+                    editedName = userInfo.name
+                    editedEmail = userInfo.email
+                },
+                onEditClick = { isEditing = true }
+
             )
         }
     }
@@ -75,13 +104,15 @@ fun ProfileScreen(
 fun ProfileScreenContent(
     paddingValues: PaddingValues,
     userInfo: UserInfo,
-//    onEditInfo: (String, String) -> Unit
+    isEditing: Boolean,
+    editedName: String,
+    editedEmail: String,
+    onNameChange: (String) -> Unit,
+    onEmailChange: (String) -> Unit,
+    onSaveChanges: () -> Unit,
+    onCancelChanges: () -> Unit,
+    onEditClick: () -> Unit
 ) {
-
-    var isEditing by remember { mutableStateOf(false) }
-    var editedName by remember { mutableStateOf(userInfo.name) }
-    var editedEmail by remember { mutableStateOf(userInfo.email) }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -101,7 +132,7 @@ fun ProfileScreenContent(
                 if (isEditing) {
                     OutlinedTextField(
                         value = editedName,
-                        onValueChange = { editedName = it },
+                        onValueChange = onNameChange,
                         textStyle = TextStyle(color = Color.Gray, fontSize = 14.sp),
                         label = { Text(text = "Name", color = Color.White, fontSize = 16.sp) },
                         modifier = Modifier
@@ -118,7 +149,7 @@ fun ProfileScreenContent(
                 if (isEditing) {
                     OutlinedTextField(
                         value = editedEmail,
-                        onValueChange = { editedEmail = it },
+                        onValueChange = onEmailChange,
                         textStyle = TextStyle(color = Color.Gray, fontSize = 14.sp),
                         label = { Text(text = "E-mail", color = Color.White, fontSize = 16.sp) },
                         modifier = Modifier
@@ -159,13 +190,13 @@ fun ProfileScreenContent(
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
                         Button(
-                            onClick = { /* TODO Save changes */ },
+                            onClick = onSaveChanges,
                             modifier = Modifier.width(150.dp)
                         ) {
                             Text(text = "Save changes")
                         }
                         Button(
-                            onClick = { /* TODO Cancel changes */ },
+                            onClick = onCancelChanges,
                             modifier = Modifier.width(150.dp)
                         ) {
                             Text(text = "Cancel")
@@ -173,8 +204,9 @@ fun ProfileScreenContent(
                     }
                 } else {
                     Button(
-                        onClick = { /* TODO Edit info */ },
-                        modifier = Modifier.fillMaxWidth()
+                        onClick = onEditClick,
+                        modifier = Modifier
+                            .fillMaxWidth()
                             .padding(32.dp)
                     ) {
                         Text(text = "Edit info")
@@ -231,7 +263,11 @@ fun RenderStatisticItem(label: String, value: String) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBarProfileScreen() {
+fun TopBarProfileScreen(
+    isEditing : Boolean,
+    onEditClick : () -> Unit,
+    onCancelClick : () -> Unit
+) {
     TopAppBar(
         title = { Text(
             text = "User profile",
@@ -249,10 +285,17 @@ fun TopBarProfileScreen() {
             }
         },
         actions = {
-            IconButton(onClick = { /* TODO Edit profile */ }) {
+            IconButton(onClick = {
+                /* TODO Edit profile */
+                if (isEditing) {
+                    onCancelClick()
+                } else {
+                    onEditClick()
+                }
+            }) {
                 Icon(
-                    Icons.Filled.Create,
-                    contentDescription = stringResource(R.string.edit_profile),
+                    imageVector = if (isEditing) Icons.Filled.Close else Icons.Filled.Create,
+                    contentDescription = if (isEditing) stringResource(R.string.cancel) else stringResource(R.string.edit_profile),
                     tint = colorResource(R.color.white)
                 )
             }

@@ -49,7 +49,6 @@ import androidx.navigation.NavController
 fun FavoriteScreen(
     favoriteMovies: List<MovieInfo>,
     navController: NavController
-//    onRemoveFavorite: (MovieInfo) -> Unit
 ) {
     Scaffold (
         topBar = { TopBarFavoriteScreen(navController) },

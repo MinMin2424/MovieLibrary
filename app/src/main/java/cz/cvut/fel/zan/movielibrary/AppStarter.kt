@@ -27,9 +27,24 @@ fun AppStarter() {
             name = "MinMin Tranova",
             email = "goldenmaknae2424@gmail.com",
             profileImage = R.drawable.user_profile,
-            registrationDate = "04.03.2025"
+            registrationDate = "04.03.2025",
+            favoriteMoviesCount = 0,
+            commentsCount = 0,
+            listFavoriteMovies = emptyList()
         )
     ) }
+    val onEditInfo = { newName: String, newEmail: String ->
+        userProfile = userProfile.copy(name = newName, email = newEmail)
+    }
+    val addToFavorites = { movie: MovieInfo ->
+        if (userProfile.listFavoriteMovies.none { it.movieId == movie.movieId }) {
+            userProfile = userProfile.copy(
+                listFavoriteMovies = userProfile.listFavoriteMovies + movie,
+                favoriteMoviesCount = userProfile.favoriteMoviesCount + 1
+            )
+        }
+    }
+
     NavHost(
         navController = navController,
         startDestination = Routes.Main.route
@@ -50,14 +65,15 @@ fun AppStarter() {
             if (movie != null) {
                 DescriptionScreen(
                     movieInfo = movie,
-                    navController = navController
+                    navController = navController,
+                    onAddToFavorites = { addToFavorites(movie) }
                 )
             }
         }
         /* FAVORITE MOVIES SCREEN */
         composable(Routes.FavoriteMovies.route) {
             FavoriteScreen(
-                favoriteMovies = listOf(Doraemon(), Conan()),
+                favoriteMovies = userProfile.listFavoriteMovies,
                 navController = navController
             )
         }
@@ -71,7 +87,8 @@ fun AppStarter() {
         composable(Routes.Profile.route) {
             ProfileScreen(
                 userInfo = userProfile,
-                navController = navController
+                navController = navController,
+                onEditInfo = onEditInfo
             )
         }
     }

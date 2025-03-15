@@ -15,25 +15,35 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarData
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -43,16 +53,39 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import cz.cvut.fel.zan.movielibrary.ui.theme.MovieLibraryTheme
+import kotlinx.coroutines.launch
 
 @Composable
 fun DescriptionScreen(
     movieInfo: MovieInfo,
-    navController: NavController
+    navController: NavController,
+    onAddToFavorites: () -> Unit
 ) {
+
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+
     Scaffold (
-        topBar = { TopBarDescriptionScreen(navController) },
+        topBar = { TopBarDescriptionScreen(
+            navController = navController,
+            onAddToFavorites = {
+                onAddToFavorites()
+                scope.launch {
+                    snackbarHostState.showSnackbar(
+                        message = "Movie added to favorites",
+                        duration = SnackbarDuration.Short
+                    )
+                }
+            }
+        ) },
         bottomBar = { BottomBarMainScreen(navController) },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState) { data ->
+                RenderSnackBar(data)
+            }
+        },
         modifier = Modifier.fillMaxSize()
+
     ) { innerPadding ->
         Box(
             modifier = Modifier
@@ -61,7 +94,7 @@ fun DescriptionScreen(
         ) {
             DescriptionScreenContent(
                 paddingValues = innerPadding,
-                movieInfo
+                movieInfo = movieInfo
             )
         }
     }
@@ -232,7 +265,8 @@ fun RenderComments(comments: List<String>) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBarDescriptionScreen(
-    navController: NavController
+    navController: NavController,
+    onAddToFavorites: () -> Unit
 ) {
     TopAppBar(
         title = { Text(
@@ -243,7 +277,7 @@ fun TopBarDescriptionScreen(
         ) },
         navigationIcon = {
             IconButton(onClick = {
-                /* TODO Go back */
+                /* Go back */
                 navController.popBackStack()
             }) {
                 Icon(
@@ -254,7 +288,7 @@ fun TopBarDescriptionScreen(
             }
         },
         actions = {
-            IconButton(onClick = { /* TODO Add movie to favorites */ }) {
+            IconButton(onClick = onAddToFavorites) {
                 Icon(
                     imageVector = Icons.Filled.Star,
                     contentDescription = stringResource(R.string.add_to_favourites),
@@ -268,3 +302,21 @@ fun TopBarDescriptionScreen(
     )
 }
 
+@Composable
+fun RenderSnackBar(data : SnackbarData) {
+    Snackbar(
+        containerColor = Color(0xFFF5F5DC),
+        contentColor = Color.Black,
+        modifier = Modifier
+            .padding(16.dp)
+            .clip(RoundedCornerShape(12.dp))
+    ) {
+        Text(
+            text = data.visuals.message,
+            textAlign = TextAlign.Center,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+}

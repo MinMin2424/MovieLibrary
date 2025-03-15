@@ -6,5 +6,6 @@ data class UserInfo(
     val profileImage : Int = 0,
     val registrationDate : String = "",
     val favoriteMoviesCount : Int = 0,
-    val commentsCount : Int = 0
+    val commentsCount : Int = 0,
+    val listFavoriteMovies : List<MovieInfo> = emptyList()
 )
