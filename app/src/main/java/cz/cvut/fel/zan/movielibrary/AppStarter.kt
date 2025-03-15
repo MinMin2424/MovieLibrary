@@ -44,6 +44,12 @@ fun AppStarter() {
             )
         }
     }
+    val removeFromFavorites = { movie: MovieInfo ->
+        userProfile = userProfile.copy(
+            listFavoriteMovies = userProfile.listFavoriteMovies.filter { it.movieId != movie.movieId },
+            favoriteMoviesCount = userProfile.favoriteMoviesCount - 1
+        )
+    }
 
     NavHost(
         navController = navController,
@@ -74,7 +80,8 @@ fun AppStarter() {
         composable(Routes.FavoriteMovies.route) {
             FavoriteScreen(
                 favoriteMovies = userProfile.listFavoriteMovies,
-                navController = navController
+                navController = navController,
+                onRemoveFromFavorites = removeFromFavorites
             )
         }
         /* LIST GENRES SCREEN */

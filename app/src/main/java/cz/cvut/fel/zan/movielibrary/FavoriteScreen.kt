@@ -3,6 +3,7 @@ package cz.cvut.fel.zan.movielibrary
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -26,10 +27,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,15 +50,26 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import kotlinx.coroutines.launch
 
 @Composable
 fun FavoriteScreen(
     favoriteMovies: List<MovieInfo>,
-    navController: NavController
+    navController: NavController,
+    onRemoveFromFavorites: (MovieInfo) -> Unit
 ) {
+
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+
     Scaffold (
         topBar = { TopBarFavoriteScreen(navController) },
         bottomBar = { BottomBarMainScreen(navController) },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState) { data ->
+                RenderSnackBar(data)
+            }
+        },
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
         Box(
@@ -63,7 +80,20 @@ fun FavoriteScreen(
             if (favoriteMovies.isEmpty()) {
                 RenderEmptyListMovies()
             } else {
-                RenderListMovies(innerPadding, favoriteMovies)
+                RenderListMovies(
+                    paddingValues = innerPadding,
+                    navController = navController,
+                    movies = favoriteMovies,
+                    onRemoveFromFavorites = { movie ->
+                        onRemoveFromFavorites(movie)
+                        scope.launch {
+                            snackbarHostState.showSnackbar(
+                                message = "${movie.movieTitle} removed from favorites",
+                                duration = SnackbarDuration.Short
+                            )
+                        }
+                    }
+                )
             }
         }
     }
@@ -110,7 +140,12 @@ fun RenderEmptyListMovies() {
 }
 
 @Composable
-fun RenderListMovies(paddingValues: PaddingValues, movies: List<MovieInfo>) {
+fun RenderListMovies(
+    paddingValues: PaddingValues,
+    navController: NavController,
+    movies: List<MovieInfo>,
+    onRemoveFromFavorites: (MovieInfo) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -120,14 +155,21 @@ fun RenderListMovies(paddingValues: PaddingValues, movies: List<MovieInfo>) {
     ) {
         Spacer(modifier = Modifier.height(16.dp))
         movies.forEach { movie ->
-            FavoriteMovieItem(movie)
+            FavoriteMovieItem(
+                movieInfo = movie,
+                navController = navController,
+                onRemoveFromFavorites = onRemoveFromFavorites)
             Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }
 
 @Composable
-fun FavoriteMovieItem(movieInfo: MovieInfo) {
+fun FavoriteMovieItem(
+    movieInfo: MovieInfo,
+    navController: NavController,
+    onRemoveFromFavorites: (MovieInfo) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -137,6 +179,9 @@ fun FavoriteMovieItem(movieInfo: MovieInfo) {
                 shape = MaterialTheme.shapes.medium
             )
             .padding(16.dp)
+            .clickable {
+                navController.navigate("${Routes.Description.route}/${movieInfo.movieId}")
+            }
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically
@@ -166,7 +211,7 @@ fun FavoriteMovieItem(movieInfo: MovieInfo) {
                     color = Color.White)
                 Spacer(modifier = Modifier.height(4.dp))
                 Button(
-                    onClick = { /* TODO Remove movie from favorites */ }
+                    onClick = { onRemoveFromFavorites(movieInfo) }
                 ) {
                     Text(stringResource(R.string.remove))
                 }

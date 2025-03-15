@@ -2,6 +2,7 @@ package cz.cvut.fel.zan.movielibrary
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -48,14 +49,18 @@ fun ListGenresScreen(
                 .background(colorResource(R.color.dark_ocean))
         ) {
             ListGenreScreenContent(
-                paddingValues = innerPadding
+                paddingValues = innerPadding,
+                navController = navController
             )
         }
     }
 }
 
 @Composable
-fun ListGenreScreenContent(paddingValues: PaddingValues) {
+fun ListGenreScreenContent(
+    paddingValues: PaddingValues,
+    navController: NavController
+) {
 
     val genres = Genre.entries.toList()
     val movies = remember { GetAllMovies() }
@@ -81,7 +86,10 @@ fun ListGenreScreenContent(paddingValues: PaddingValues) {
                         .horizontalScroll(rememberScrollState())
                 ) {
                     for (movie in moviesForGenre) {
-                        MovieItem(movie = movie)
+                        MovieItemGenre(
+                            movie = movie,
+                            navController = navController
+                        )
                         Spacer(modifier = Modifier.width(8.dp))
                     }
                 }
@@ -138,10 +146,16 @@ fun TextWithHorizontalLines(text : String) {
 }
 
 @Composable
-fun MovieItem (movie : MovieInfo) {
+fun MovieItemGenre (
+    movie : MovieInfo,
+    navController: NavController
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.width(100.dp)
+            .clickable {
+                navController.navigate("${Routes.Description.route}/${movie.movieId}")
+            }
     ) {
         Image(
             painter = painterResource(id = movie.movieImage),
