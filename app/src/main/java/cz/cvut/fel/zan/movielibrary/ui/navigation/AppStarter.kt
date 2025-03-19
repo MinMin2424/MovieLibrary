@@ -1,4 +1,4 @@
-package cz.cvut.fel.zan.movielibrary
+package cz.cvut.fel.zan.movielibrary.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -10,14 +10,15 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-
-sealed class Routes(val route: String) {
-    data object Main: Routes("Main")
-    data object Description: Routes("Description")
-    data object FavoriteMovies: Routes("FavoriteMovies")
-    data object ListGenres: Routes("ListGenres")
-    data object Profile: Routes("Profile")
-}
+import cz.cvut.fel.zan.movielibrary.ui.screens.DescriptionScreen
+import cz.cvut.fel.zan.movielibrary.ui.screens.FavoriteScreen
+import cz.cvut.fel.zan.movielibrary.ui.screens.ListGenresScreen
+import cz.cvut.fel.zan.movielibrary.ui.screens.MainScreen
+import cz.cvut.fel.zan.movielibrary.ui.screens.ProfileScreen
+import cz.cvut.fel.zan.movielibrary.R
+import cz.cvut.fel.zan.movielibrary.data.GetAllMovies
+import cz.cvut.fel.zan.movielibrary.data.MovieInfo
+import cz.cvut.fel.zan.movielibrary.data.UserInfo
 
 @Composable
 fun AppStarter() {
@@ -33,6 +34,7 @@ fun AppStarter() {
             listFavoriteMovies = emptyList()
         )
     ) }
+    var movies by remember { mutableStateOf(GetAllMovies()) }
     val onEditInfo = { newName: String, newEmail: String ->
         userProfile = userProfile.copy(name = newName, email = newEmail)
     }
@@ -48,6 +50,18 @@ fun AppStarter() {
         userProfile = userProfile.copy(
             listFavoriteMovies = userProfile.listFavoriteMovies.filter { it.movieId != movie.movieId },
             favoriteMoviesCount = userProfile.favoriteMoviesCount - 1
+        )
+    }
+    val addComment = { movieId: Int, comment: String ->
+        movies = movies.map { movie ->
+            if (movie.movieId == movieId) {
+                movie.addComment(comment)
+            } else {
+                movie
+            }
+        }
+        userProfile = userProfile.copy(
+            commentsCount = userProfile.commentsCount + 1
         )
     }
 
@@ -67,12 +81,15 @@ fun AppStarter() {
             arguments = listOf(navArgument("movieId") { type = NavType.IntType} )
         ) {navBackStackEntry ->
             val movieId = navBackStackEntry.arguments?.getInt("movieId") ?: 0
-            val movie = GetAllMovies().find { it.movieId == movieId }
+            val movie = movies.find { it.movieId == movieId }
             if (movie != null) {
                 DescriptionScreen(
                     movieInfo = movie,
                     navController = navController,
-                    onAddToFavorites = { addToFavorites(movie) }
+                    onAddToFavorites = { addToFavorites(movie) },
+                    onAddComment = {
+                            comment -> addComment(movieId, comment)
+                    }
                 )
             }
         }

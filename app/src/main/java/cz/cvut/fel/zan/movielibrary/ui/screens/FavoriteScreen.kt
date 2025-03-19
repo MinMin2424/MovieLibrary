@@ -1,4 +1,4 @@
-package cz.cvut.fel.zan.movielibrary
+package cz.cvut.fel.zan.movielibrary.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -34,6 +34,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import cz.cvut.fel.zan.movielibrary.data.Genre
+import cz.cvut.fel.zan.movielibrary.R
+import cz.cvut.fel.zan.movielibrary.ui.navigation.Routes
+import cz.cvut.fel.zan.movielibrary.data.GetAllMovies
+import cz.cvut.fel.zan.movielibrary.data.MovieInfo
 
 @Composable
 fun ListGenresScreen(

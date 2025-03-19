@@ -1,4 +1,4 @@
-package cz.cvut.fel.zan.movielibrary
+package cz.cvut.fel.zan.movielibrary.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -34,6 +34,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -46,6 +47,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import cz.cvut.fel.zan.movielibrary.R
+import cz.cvut.fel.zan.movielibrary.ui.navigation.Routes
+import cz.cvut.fel.zan.movielibrary.data.GetAllMovies
+import cz.cvut.fel.zan.movielibrary.data.MovieInfo
 
 @Composable
 fun MainScreen(
@@ -71,9 +76,7 @@ fun MainScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBarMainScreen(
-    navController: NavController
-) {
+fun TopBarMainScreen(navController: NavController) {
     TopAppBar(
         title = { Text(
             text = "Movie library",
@@ -82,7 +85,7 @@ fun TopBarMainScreen(
             fontSize = 26.sp
         ) },
         navigationIcon = {
-            IconButton(onClick = { /* TODO Open Nav Drawer */ }) {
+            IconButton(onClick = {/* TODO Open Nav Drawer */} ) {
                 Icon(
                     Icons.Filled.Menu,
                     contentDescription = stringResource(R.string.menu),
@@ -151,7 +154,8 @@ fun MovieItem(
             .width(110.dp)
             .clickable {
                 navController.navigate("${Routes.Description.route}/${movieInfo.movieId}")
-            }
+            },
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
             painter = painterResource(id = movieInfo.movieImage),

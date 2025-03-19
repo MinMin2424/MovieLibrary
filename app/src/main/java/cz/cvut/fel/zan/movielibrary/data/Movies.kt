@@ -1,4 +1,6 @@
-package cz.cvut.fel.zan.movielibrary
+package cz.cvut.fel.zan.movielibrary.data
+
+import cz.cvut.fel.zan.movielibrary.R
 
 fun GetAllMovies() : List<MovieInfo> {
     return listOf(

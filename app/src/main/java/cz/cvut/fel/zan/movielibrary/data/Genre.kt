@@ -1,4 +1,4 @@
-package cz.cvut.fel.zan.movielibrary
+package cz.cvut.fel.zan.movielibrary.data
 
 enum class Genre {
     ACTION,

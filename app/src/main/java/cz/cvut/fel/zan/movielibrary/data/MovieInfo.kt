@@ -1,4 +1,4 @@
-package cz.cvut.fel.zan.movielibrary
+package cz.cvut.fel.zan.movielibrary.data
 
 data class MovieInfo(
     val movieId : Int = 0,
@@ -10,4 +10,8 @@ data class MovieInfo(
     val country : String = "",
     val description : String = "",
     val comments : List<String> = emptyList()
-)
+) {
+    fun addComment(newComment: String) : MovieInfo {
+        return this.copy(comments = comments + newComment)
+    }
+}

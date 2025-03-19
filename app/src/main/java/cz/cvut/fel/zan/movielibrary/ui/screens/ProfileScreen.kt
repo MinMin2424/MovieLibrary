@@ -1,4 +1,4 @@
-package cz.cvut.fel.zan.movielibrary
+package cz.cvut.fel.zan.movielibrary.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -46,6 +46,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import cz.cvut.fel.zan.movielibrary.R
+import cz.cvut.fel.zan.movielibrary.data.UserInfo
 
 @Composable
 fun ProfileScreen(
@@ -295,7 +297,9 @@ fun TopBarProfileScreen(
             }) {
                 Icon(
                     imageVector = if (isEditing) Icons.Filled.Close else Icons.Filled.Create,
-                    contentDescription = if (isEditing) stringResource(R.string.cancel) else stringResource(R.string.edit_profile),
+                    contentDescription = if (isEditing) stringResource(R.string.cancel) else stringResource(
+                        R.string.edit_profile
+                    ),
                     tint = colorResource(R.color.white)
                 )
             }

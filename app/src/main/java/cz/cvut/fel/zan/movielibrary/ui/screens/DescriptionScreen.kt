@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package cz.cvut.fel.zan.movielibrary
+package cz.cvut.fel.zan.movielibrary.ui.screens
 
 import androidx.compose.material3.Button
 import androidx.compose.foundation.Image
@@ -15,20 +15,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Snackbar
-import androidx.compose.material3.SnackbarData
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -36,34 +33,39 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import cz.cvut.fel.zan.movielibrary.ui.theme.MovieLibraryTheme
+import cz.cvut.fel.zan.movielibrary.R
+import cz.cvut.fel.zan.movielibrary.data.MovieInfo
+import cz.cvut.fel.zan.movielibrary.ui.components.RenderSnackBar
 import kotlinx.coroutines.launch
 
 @Composable
 fun DescriptionScreen(
     movieInfo: MovieInfo,
     navController: NavController,
-    onAddToFavorites: () -> Unit
+    onAddToFavorites: () -> Unit,
+    onAddComment: (String) -> Unit
 ) {
 
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
+    var newComment by remember { mutableStateOf("") }
 
     Scaffold (
         topBar = { TopBarDescriptionScreen(
@@ -94,7 +96,19 @@ fun DescriptionScreen(
         ) {
             DescriptionScreenContent(
                 paddingValues = innerPadding,
-                movieInfo = movieInfo
+                movieInfo = movieInfo,
+                newComment = newComment,
+                onCommentChange = { newComment = it },
+                onAddComment = {
+                    onAddComment(it)
+                    scope.launch {
+                        snackbarHostState.showSnackbar(
+                            message = "Comment added successfully",
+                            duration = SnackbarDuration.Short
+                        )
+                    }
+                    newComment = ""
+                }
             )
         }
     }
@@ -103,7 +117,10 @@ fun DescriptionScreen(
 @Composable
 fun DescriptionScreenContent(
     paddingValues: PaddingValues,
-    movieInfo: MovieInfo
+    movieInfo: MovieInfo,
+    newComment: String,
+    onCommentChange: (String) -> Unit,
+    onAddComment: (String) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -120,7 +137,12 @@ fun DescriptionScreenContent(
             Spacer(modifier = Modifier.height(16.dp))
             RenderDescription(movieInfo.description)
             Spacer(modifier = Modifier.height(16.dp))
-            RenderComments(movieInfo.comments)
+            RenderComments(
+                comments = movieInfo.comments,
+                newComment = newComment,
+                onCommentChange = onCommentChange,
+                onAddComment = onAddComment
+            )
         }
     }
 }
@@ -213,7 +235,12 @@ fun RenderDescription(description: String) {
 }
 
 @Composable
-fun RenderComments(comments: List<String>) {
+fun RenderComments(
+    comments: List<String>,
+    newComment: String,
+    onCommentChange: (String) -> Unit,
+    onAddComment: (String) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -228,9 +255,10 @@ fun RenderComments(comments: List<String>) {
         )
         Spacer(modifier = Modifier.height(8.dp))
         OutlinedTextField(
-            value = "",
-            onValueChange = { /* TODO */ },
+            value = newComment,
+            onValueChange = onCommentChange,
             label = { Text ("Write your opinions about the movie") },
+            textStyle = LocalTextStyle.current.copy(Color.White),
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(8.dp))
@@ -239,7 +267,7 @@ fun RenderComments(comments: List<String>) {
         ) {
             Spacer(modifier = Modifier.weight(1f))
             Button(
-                onClick = { /* TODO */ },
+                onClick = { onAddComment(newComment) },
             ) {
                 Text(stringResource(R.string.send))
             }
@@ -300,23 +328,4 @@ fun TopBarDescriptionScreen(
             containerColor = colorResource(R.color.purple_blue)
         )
     )
-}
-
-@Composable
-fun RenderSnackBar(data : SnackbarData) {
-    Snackbar(
-        containerColor = Color(0xFFF5F5DC),
-        contentColor = Color.Black,
-        modifier = Modifier
-            .padding(16.dp)
-            .clip(RoundedCornerShape(12.dp))
-    ) {
-        Text(
-            text = data.visuals.message,
-            textAlign = TextAlign.Center,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.SemiBold,
-            modifier = Modifier.fillMaxWidth()
-        )
-    }
 }
