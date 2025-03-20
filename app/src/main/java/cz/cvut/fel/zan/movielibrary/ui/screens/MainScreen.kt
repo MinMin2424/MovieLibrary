@@ -51,6 +51,7 @@ import cz.cvut.fel.zan.movielibrary.R
 import cz.cvut.fel.zan.movielibrary.ui.navigation.Routes
 import cz.cvut.fel.zan.movielibrary.data.GetAllMovies
 import cz.cvut.fel.zan.movielibrary.data.MovieInfo
+import cz.cvut.fel.zan.movielibrary.ui.utils.isLandscape
 
 @Composable
 fun MainScreen(
@@ -129,18 +130,34 @@ fun ListMovies(
     navController: NavController
 ) {
     val movies = GetAllMovies()
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(3),
-        contentPadding = PaddingValues(8.dp),
-        modifier = Modifier.height(1000.dp)
-    ) {
-        items(movies) {movie ->
-            MovieItem(
-                movieInfo = movie,
-                navController = navController
-            )
+    if (isLandscape()) {
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(5),
+            contentPadding = PaddingValues(8.dp),
+            modifier = Modifier.height(1000.dp)
+        ) {
+            items(movies) {movie ->
+                MovieItem(
+                    movieInfo = movie,
+                    navController = navController
+                )
+            }
+        }
+    } else {
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(3),
+            contentPadding = PaddingValues(8.dp),
+            modifier = Modifier.height(1000.dp)
+        ) {
+            items(movies) {movie ->
+                MovieItem(
+                    movieInfo = movie,
+                    navController = navController
+                )
+            }
         }
     }
+
 }
 
 @Composable

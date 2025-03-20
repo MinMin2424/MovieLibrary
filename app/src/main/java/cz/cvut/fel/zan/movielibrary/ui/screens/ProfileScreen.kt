@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -41,13 +42,17 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import cz.cvut.fel.zan.movielibrary.R
 import cz.cvut.fel.zan.movielibrary.data.UserInfo
+import cz.cvut.fel.zan.movielibrary.ui.utils.isLandscape
 
 @Composable
 fun ProfileScreen(
@@ -56,9 +61,9 @@ fun ProfileScreen(
     onEditInfo: (String, String) -> Unit
 ) {
 
-    var isEditing by remember { mutableStateOf(false) }
-    var editedName by remember { mutableStateOf(userInfo.name) }
-    var editedEmail by remember { mutableStateOf(userInfo.email) }
+    var isEditing by rememberSaveable { mutableStateOf(false) }
+    var editedName by rememberSaveable { mutableStateOf(userInfo.name) }
+    var editedEmail by rememberSaveable { mutableStateOf(userInfo.email) }
 
     Scaffold (
         topBar = { TopBarProfileScreen(
@@ -96,7 +101,6 @@ fun ProfileScreen(
                     editedEmail = userInfo.email
                 },
                 onEditClick = { isEditing = true }
-
             )
         }
     }
@@ -115,106 +119,71 @@ fun ProfileScreenContent(
     onCancelChanges: () -> Unit,
     onEditClick: () -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(paddingValues)
-            .verticalScroll(rememberScrollState())
-    ) {
-        Box(
+    if (isLandscape()) {
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(paddingValues)
                 .padding(vertical = 16.dp)
+                .padding(horizontal = 64.dp)
         ) {
-            Column {
+            Box(
+                modifier = Modifier
+                    .padding(end = 16.dp),
+            ) {
+                Image(
+                    painter = painterResource(userInfo.profileImage),
+                    contentDescription = stringResource(R.string.profile_picture),
+                    modifier = Modifier
+                        .size(180.dp)
+                        .clip(MaterialTheme.shapes.medium),
+                    contentScale = ContentScale.Crop
+                )
+            }
+            Column(
+                modifier = Modifier.verticalScroll(rememberScrollState())
+            ) {
+                RenderProfileInfo(
+                    userInfo = userInfo,
+                    isEditing = isEditing,
+                    editedName = editedName,
+                    editedEmail = editedEmail,
+                    onNameChange = onNameChange,
+                    onEmailChange = onEmailChange,
+                    onSaveChanges = onSaveChanges,
+                    onCancelChanges = onCancelChanges,
+                    onEditClick = onEditClick
+                )
+            }
+        }
+    } else {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .verticalScroll(rememberScrollState())
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp)
+            ) {
+                Column {
 
-                RenderProfilePicture(userInfo.profileImage)
-                Spacer(modifier = Modifier.height(8.dp))
-
-                if (isEditing) {
-                    OutlinedTextField(
-                        value = editedName,
-                        onValueChange = onNameChange,
-                        textStyle = TextStyle(color = Color.Gray, fontSize = 14.sp),
-                        label = { Text(text = "Name", color = Color.White, fontSize = 16.sp) },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 32.dp)
+                    RenderProfilePicture(userInfo.profileImage)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    RenderProfileInfo(
+                        userInfo = userInfo,
+                        isEditing = isEditing,
+                        editedName = editedName,
+                        editedEmail = editedEmail,
+                        onNameChange = onNameChange,
+                        onEmailChange = onEmailChange,
+                        onSaveChanges = onSaveChanges,
+                        onCancelChanges = onCancelChanges,
+                        onEditClick = onEditClick
                     )
-                } else {
-                    RenderInfo(info = userInfo.name,
-                        fontSize = 20,
-                        fontWeight = FontWeight.Bold)
                 }
-                Spacer(modifier = Modifier.height(8.dp))
-
-                if (isEditing) {
-                    OutlinedTextField(
-                        value = editedEmail,
-                        onValueChange = onEmailChange,
-                        textStyle = TextStyle(color = Color.Gray, fontSize = 14.sp),
-                        label = { Text(text = "E-mail", color = Color.White, fontSize = 16.sp) },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 32.dp)
-                    )
-                } else {
-                    RenderInfo(info = "E-mail: ${userInfo.email}",
-                        fontSize = 16,
-                        fontWeight = FontWeight.Normal)
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-
-                RenderInfo(info = "Registration date: ${userInfo.registrationDate}",
-                    fontSize = 16,
-                    fontWeight = FontWeight.Normal)
-                Spacer(modifier = Modifier.height(8.dp))
-
-                RenderInfo(info = "Statistic",
-                    fontSize = 16,
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                RenderStatisticItem(
-                    label = "Favorite Movies",
-                    value = userInfo.favoriteMoviesCount.toString()
-                )
-                RenderStatisticItem(
-                    label = "Comments",
-                    value = userInfo.commentsCount.toString()
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                if (isEditing) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(32.dp),
-                        horizontalArrangement = Arrangement.SpaceEvenly
-                    ) {
-                        Button(
-                            onClick = onSaveChanges,
-                            modifier = Modifier.width(150.dp)
-                        ) {
-                            Text(text = "Save changes")
-                        }
-                        Button(
-                            onClick = onCancelChanges,
-                            modifier = Modifier.width(150.dp)
-                        ) {
-                            Text(text = "Cancel")
-                        }
-                    }
-                } else {
-                    Button(
-                        onClick = onEditClick,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(32.dp)
-                    ) {
-                        Text(text = "Edit info")
-                    }
-                }
-
             }
         }
     }
@@ -261,6 +230,103 @@ fun RenderStatisticItem(label: String, value: String) {
             .fillMaxWidth()
             .padding(horizontal = 32.dp)
     )
+}
+
+@Composable
+fun RenderProfileInfo(
+    userInfo: UserInfo,
+    isEditing: Boolean,
+    editedName: String,
+    editedEmail: String,
+    onNameChange: (String) -> Unit,
+    onEmailChange: (String) -> Unit,
+    onSaveChanges: () -> Unit,
+    onCancelChanges: () -> Unit,
+    onEditClick: () -> Unit
+) {
+    if (isEditing) {
+        OutlinedTextField(
+            value = editedName,
+            onValueChange = onNameChange,
+            textStyle = TextStyle(color = Color.Gray, fontSize = 14.sp),
+            label = { Text(text = "Name", color = Color.White, fontSize = 16.sp) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 32.dp)
+        )
+    } else {
+        RenderInfo(info = userInfo.name,
+            fontSize = 20,
+            fontWeight = FontWeight.Bold)
+    }
+    Spacer(modifier = Modifier.height(8.dp))
+
+    if (isEditing) {
+        OutlinedTextField(
+            value = editedEmail,
+            onValueChange = onEmailChange,
+            textStyle = TextStyle(color = Color.Gray, fontSize = 14.sp),
+            label = { Text(text = "E-mail", color = Color.White, fontSize = 16.sp) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 32.dp)
+        )
+    } else {
+        RenderInfo(info = "E-mail: ${userInfo.email}",
+            fontSize = 16,
+            fontWeight = FontWeight.Normal)
+    }
+    Spacer(modifier = Modifier.height(8.dp))
+
+    RenderInfo(info = "Registration date: ${userInfo.registrationDate}",
+        fontSize = 16,
+        fontWeight = FontWeight.Normal)
+    Spacer(modifier = Modifier.height(8.dp))
+
+    RenderInfo(info = "Statistic",
+        fontSize = 16,
+        fontWeight = FontWeight.Bold
+    )
+    Spacer(modifier = Modifier.height(8.dp))
+    RenderStatisticItem(
+        label = "Favorite Movies",
+        value = userInfo.favoriteMoviesCount.toString()
+    )
+    RenderStatisticItem(
+        label = "Comments",
+        value = userInfo.commentsCount.toString()
+    )
+    Spacer(modifier = Modifier.height(8.dp))
+    if (isEditing) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(32.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            Button(
+                onClick = onSaveChanges,
+                modifier = Modifier.width(150.dp)
+            ) {
+                Text(text = "Save changes")
+            }
+            Button(
+                onClick = onCancelChanges,
+                modifier = Modifier.width(150.dp)
+            ) {
+                Text(text = "Cancel")
+            }
+        }
+    } else {
+        Button(
+            onClick = onEditClick,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(32.dp)
+        ) {
+            Text(text = "Edit info")
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

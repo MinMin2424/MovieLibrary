@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -33,10 +34,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -53,19 +56,27 @@ import androidx.navigation.NavController
 import cz.cvut.fel.zan.movielibrary.R
 import cz.cvut.fel.zan.movielibrary.data.MovieInfo
 import cz.cvut.fel.zan.movielibrary.ui.components.RenderSnackBar
+import cz.cvut.fel.zan.movielibrary.ui.utils.isLandscape
+import cz.cvut.fel.zan.movielibrary.ui.viewModel.MovieViewModel
+import cz.cvut.fel.zan.movielibrary.ui.viewModel.UserViewModel
 import kotlinx.coroutines.launch
 
 @Composable
 fun DescriptionScreen(
-    movieInfo: MovieInfo,
+    movieId: Int,
     navController: NavController,
     onAddToFavorites: () -> Unit,
-    onAddComment: (String) -> Unit
+    movieViewModel: MovieViewModel,
+    userViewModel: UserViewModel
 ) {
 
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
-    var newComment by remember { mutableStateOf("") }
+
+    val movie by movieViewModel.movies.collectAsState()
+    val selectedMovie = movie.find { it.movieId == movieId }
+    requireNotNull(selectedMovie) { "Movie with ID $movieId not found" }
+    var newComment by rememberSaveable { mutableStateOf("") }
 
     Scaffold (
         topBar = { TopBarDescriptionScreen(
@@ -96,11 +107,12 @@ fun DescriptionScreen(
         ) {
             DescriptionScreenContent(
                 paddingValues = innerPadding,
-                movieInfo = movieInfo,
+                movieInfo = selectedMovie,
                 newComment = newComment,
                 onCommentChange = { newComment = it },
                 onAddComment = {
-                    onAddComment(it)
+                    movieViewModel.addComment(movieId, it)
+                    userViewModel.addComment()
                     scope.launch {
                         snackbarHostState.showSnackbar(
                             message = "Comment added successfully",
@@ -128,12 +140,16 @@ fun DescriptionScreenContent(
             .fillMaxSize()
     ) {
         item {
-            Spacer(modifier = Modifier.height(32.dp))
-            RenderImage(movieInfo.movieImage, movieInfo.movieTitle)
-            Spacer(modifier = Modifier.height(16.dp))
-            RenderTitle(movieInfo.movieTitle)
-            Spacer(modifier = Modifier.height(8.dp))
-            RenderInfo(movieInfo)
+            if (isLandscape()) {
+                RenderImageAndInfo(movieInfo)
+            } else {
+                Spacer(modifier = Modifier.height(32.dp))
+                RenderImage(movieInfo.movieImage, movieInfo.movieTitle)
+                Spacer(modifier = Modifier.height(16.dp))
+                RenderTitle(movieInfo.movieTitle, TextAlign.Center)
+                Spacer(modifier = Modifier.height(8.dp))
+                RenderInfo(movieInfo)
+            }
             Spacer(modifier = Modifier.height(16.dp))
             RenderDescription(movieInfo.description)
             Spacer(modifier = Modifier.height(16.dp))
@@ -166,7 +182,7 @@ fun RenderImage(picture: Int, name: String) {
 }
 
 @Composable
-fun RenderTitle(movieTitle: String) {
+fun RenderTitle(movieTitle: String, textAlign: TextAlign) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -176,7 +192,7 @@ fun RenderTitle(movieTitle: String) {
             text = movieTitle,
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center,
+            textAlign = textAlign,
             color = colorResource(R.color.white),
             modifier = Modifier.fillMaxWidth()
         )
@@ -286,6 +302,37 @@ fun RenderComments(
                 thickness = 1.dp,
                 color = Color.Gray
             )
+        }
+    }
+}
+
+@Composable
+fun RenderImageAndInfo(
+    movieInfo: MovieInfo
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp)
+            .padding(horizontal = 64.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .padding(end = 16.dp),
+        ) {
+            Image(
+                painter = painterResource(movieInfo.movieImage),
+                contentDescription = movieInfo.movieTitle,
+                modifier = Modifier
+                    .size(180.dp)
+                    .clip(MaterialTheme.shapes.medium),
+                contentScale = ContentScale.Crop
+            )
+        }
+        Column {
+            RenderTitle(movieInfo.movieTitle, TextAlign.Left)
+            Spacer(modifier = Modifier.height(16.dp))
+            RenderInfo(movieInfo)
         }
     }
 }

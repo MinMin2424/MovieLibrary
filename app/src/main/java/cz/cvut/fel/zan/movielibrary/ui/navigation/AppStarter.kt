@@ -1,10 +1,9 @@
 package cz.cvut.fel.zan.movielibrary.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -15,55 +14,14 @@ import cz.cvut.fel.zan.movielibrary.ui.screens.FavoriteScreen
 import cz.cvut.fel.zan.movielibrary.ui.screens.ListGenresScreen
 import cz.cvut.fel.zan.movielibrary.ui.screens.MainScreen
 import cz.cvut.fel.zan.movielibrary.ui.screens.ProfileScreen
-import cz.cvut.fel.zan.movielibrary.R
-import cz.cvut.fel.zan.movielibrary.data.GetAllMovies
-import cz.cvut.fel.zan.movielibrary.data.MovieInfo
-import cz.cvut.fel.zan.movielibrary.data.UserInfo
+import cz.cvut.fel.zan.movielibrary.ui.viewModel.MovieViewModel
+import cz.cvut.fel.zan.movielibrary.ui.viewModel.UserViewModel
 
 @Composable
 fun AppStarter() {
     val navController = rememberNavController()
-    var userProfile by remember { mutableStateOf(
-        UserInfo(
-            name = "MinMin Tranova",
-            email = "goldenmaknae2424@gmail.com",
-            profileImage = R.drawable.user_profile,
-            registrationDate = "04.03.2025",
-            favoriteMoviesCount = 0,
-            commentsCount = 0,
-            listFavoriteMovies = emptyList()
-        )
-    ) }
-    var movies by remember { mutableStateOf(GetAllMovies()) }
-    val onEditInfo = { newName: String, newEmail: String ->
-        userProfile = userProfile.copy(name = newName, email = newEmail)
-    }
-    val addToFavorites = { movie: MovieInfo ->
-        if (userProfile.listFavoriteMovies.none { it.movieId == movie.movieId }) {
-            userProfile = userProfile.copy(
-                listFavoriteMovies = userProfile.listFavoriteMovies + movie,
-                favoriteMoviesCount = userProfile.favoriteMoviesCount + 1
-            )
-        }
-    }
-    val removeFromFavorites = { movie: MovieInfo ->
-        userProfile = userProfile.copy(
-            listFavoriteMovies = userProfile.listFavoriteMovies.filter { it.movieId != movie.movieId },
-            favoriteMoviesCount = userProfile.favoriteMoviesCount - 1
-        )
-    }
-    val addComment = { movieId: Int, comment: String ->
-        movies = movies.map { movie ->
-            if (movie.movieId == movieId) {
-                movie.addComment(comment)
-            } else {
-                movie
-            }
-        }
-        userProfile = userProfile.copy(
-            commentsCount = userProfile.commentsCount + 1
-        )
-    }
+    val userViewModel: UserViewModel = viewModel()
+    val movieViewModel: MovieViewModel = viewModel()
 
     NavHost(
         navController = navController,
@@ -81,24 +39,23 @@ fun AppStarter() {
             arguments = listOf(navArgument("movieId") { type = NavType.IntType} )
         ) {navBackStackEntry ->
             val movieId = navBackStackEntry.arguments?.getInt("movieId") ?: 0
-            val movie = movies.find { it.movieId == movieId }
-            if (movie != null) {
-                DescriptionScreen(
-                    movieInfo = movie,
-                    navController = navController,
-                    onAddToFavorites = { addToFavorites(movie) },
-                    onAddComment = {
-                            comment -> addComment(movieId, comment)
-                    }
-                )
-            }
+            val movie = movieViewModel.getMovieById(movieId)
+            requireNotNull(movie) { "Movie with ID $movieId not found" }
+            DescriptionScreen(
+                movieId = movieId,
+                navController = navController,
+                onAddToFavorites = { userViewModel.addToFavorites(movie) },
+                movieViewModel = movieViewModel,
+                userViewModel = userViewModel
+            )
         }
         /* FAVORITE MOVIES SCREEN */
         composable(Routes.FavoriteMovies.route) {
+            val favoriteMovies by userViewModel.userInfo.collectAsState()
             FavoriteScreen(
-                favoriteMovies = userProfile.listFavoriteMovies,
+                favoriteMovies = favoriteMovies.listFavoriteMovies,
                 navController = navController,
-                onRemoveFromFavorites = removeFromFavorites
+                onRemoveFromFavorites = { movie -> userViewModel.removeFromFavorites(movie) }
             )
         }
         /* LIST GENRES SCREEN */
@@ -109,10 +66,11 @@ fun AppStarter() {
         }
         /* USER PROFILE SCREEN */
         composable(Routes.Profile.route) {
+            val userInfo by userViewModel.userInfo.collectAsState()
             ProfileScreen(
-                userInfo = userProfile,
+                userInfo = userInfo,
                 navController = navController,
-                onEditInfo = onEditInfo
+                onEditInfo = { newName, newEmail -> userViewModel.editUserInfo(newName, newEmail) }
             )
         }
     }
