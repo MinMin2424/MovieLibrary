@@ -57,7 +57,9 @@ import cz.cvut.fel.zan.movielibrary.R
 import cz.cvut.fel.zan.movielibrary.data.MovieInfo
 import cz.cvut.fel.zan.movielibrary.ui.components.RenderSnackBar
 import cz.cvut.fel.zan.movielibrary.ui.utils.isLandscape
+import cz.cvut.fel.zan.movielibrary.ui.viewModel.MovieEditEvent
 import cz.cvut.fel.zan.movielibrary.ui.viewModel.MovieViewModel
+import cz.cvut.fel.zan.movielibrary.ui.viewModel.ProfileScreenEditEvent
 import cz.cvut.fel.zan.movielibrary.ui.viewModel.UserViewModel
 import kotlinx.coroutines.launch
 
@@ -111,8 +113,11 @@ fun DescriptionScreen(
                 newComment = newComment,
                 onCommentChange = { newComment = it },
                 onAddComment = {
-                    movieViewModel.addComment(movieId, it)
-                    userViewModel.addComment()
+                    /* TODO Changed onEditInfo -> onEvent method */
+//                    movieViewModel.addComment(movieId, it)
+//                    userViewModel.addComment()
+                    movieViewModel.onEvent(MovieEditEvent.AddCommentChanged(movieId, it))
+                    userViewModel.onEvent(ProfileScreenEditEvent.AddCommentChanged(1))
                     scope.launch {
                         snackbarHostState.showSnackbar(
                             message = "Comment added successfully",

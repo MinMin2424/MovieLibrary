@@ -14,7 +14,9 @@ import cz.cvut.fel.zan.movielibrary.ui.screens.FavoriteScreen
 import cz.cvut.fel.zan.movielibrary.ui.screens.ListGenresScreen
 import cz.cvut.fel.zan.movielibrary.ui.screens.MainScreen
 import cz.cvut.fel.zan.movielibrary.ui.screens.ProfileScreen
+import cz.cvut.fel.zan.movielibrary.ui.viewModel.MovieEditEvent
 import cz.cvut.fel.zan.movielibrary.ui.viewModel.MovieViewModel
+import cz.cvut.fel.zan.movielibrary.ui.viewModel.ProfileScreenEditEvent
 import cz.cvut.fel.zan.movielibrary.ui.viewModel.UserViewModel
 
 @Composable
@@ -44,7 +46,9 @@ fun AppStarter() {
             DescriptionScreen(
                 movieId = movieId,
                 navController = navController,
-                onAddToFavorites = { userViewModel.addToFavorites(movie) },
+                /* TODO Changed onEditInfo -> onEvent method */
+//                onAddToFavorites = { userViewModel.addToFavorites(movie) },
+                onAddToFavorites = { userViewModel.onEvent(ProfileScreenEditEvent.AddToFavoritesChanged(movie)) },
                 movieViewModel = movieViewModel,
                 userViewModel = userViewModel
             )
@@ -55,7 +59,9 @@ fun AppStarter() {
             FavoriteScreen(
                 favoriteMovies = favoriteMovies.listFavoriteMovies,
                 navController = navController,
-                onRemoveFromFavorites = { movie -> userViewModel.removeFromFavorites(movie) }
+                /* TODO Changed onEditInfo -> onEvent method */
+//                onRemoveFromFavorites = { movie -> userViewModel.removeFromFavorites(movie) }
+                onRemoveFromFavorites = { movie -> userViewModel.onEvent(ProfileScreenEditEvent.RemoveFromFavoritesChanged(movie)) }
             )
         }
         /* LIST GENRES SCREEN */
@@ -70,7 +76,9 @@ fun AppStarter() {
             ProfileScreen(
                 userInfo = userInfo,
                 navController = navController,
-                onEditInfo = { newName, newEmail -> userViewModel.editUserInfo(newName, newEmail) }
+                /* TODO Changed onEditInfo -> onEvent method */
+//                onEditInfo = { newName, newEmail -> userViewModel.editUserInfo(newName, newEmail) }
+                onEditInfo = { newName, newEmail -> userViewModel.onEvent(ProfileScreenEditEvent.UserInfoChanged(newName, newEmail))}
             )
         }
     }
