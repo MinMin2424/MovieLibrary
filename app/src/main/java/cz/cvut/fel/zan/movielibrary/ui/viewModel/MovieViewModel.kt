@@ -33,10 +33,6 @@ class MovieViewModel() : ViewModel() {
     private val _currentMovie = MutableStateFlow<MovieInfo?>(null)
     val currentMovie: StateFlow<MovieInfo?> = _currentMovie
 
-//    suspend fun loadMovieById(movieId: Int) : MovieInfo {
-//        return movieRepository.getMovieById(movieId)
-//    }
-
     suspend fun loadMovieById(movieId: Int) {
         val movie = movieRepository.getMovieById(movieId)
         _currentMovie.value = movie

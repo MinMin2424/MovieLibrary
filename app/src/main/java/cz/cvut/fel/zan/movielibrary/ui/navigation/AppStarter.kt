@@ -4,25 +4,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import cz.cvut.fel.zan.movielibrary.data.local.MovieInfo
 import cz.cvut.fel.zan.movielibrary.ui.screens.DescriptionScreen
 import cz.cvut.fel.zan.movielibrary.ui.screens.FavoriteScreen
 import cz.cvut.fel.zan.movielibrary.ui.screens.ListGenresScreen
 import cz.cvut.fel.zan.movielibrary.ui.screens.MainScreen
 import cz.cvut.fel.zan.movielibrary.ui.screens.ProfileScreen
-import cz.cvut.fel.zan.movielibrary.ui.viewModel.MovieEditEvent
 import cz.cvut.fel.zan.movielibrary.ui.viewModel.MovieViewModel
 import cz.cvut.fel.zan.movielibrary.ui.viewModel.ProfileScreenEditEvent
 import cz.cvut.fel.zan.movielibrary.ui.viewModel.UserViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 @Composable
 fun AppStarter() {
@@ -46,11 +41,6 @@ fun AppStarter() {
             arguments = listOf(navArgument("movieId") { type = NavType.IntType} )
         ) {navBackStackEntry ->
             val movieId = navBackStackEntry.arguments?.getInt("movieId") ?: 0
-//            val movie by produceState<MovieInfo?>(initialValue = null) {
-//                value = withContext(Dispatchers.IO) {
-//                    movieViewModel.loadMovieById(movieId)
-//                }
-//            }
             val movie by movieViewModel.currentMovie.collectAsState()
             LaunchedEffect(movieId) {
                 movieViewModel.loadMovieById(movieId)
@@ -73,7 +63,7 @@ fun AppStarter() {
         composable(Routes.FavoriteMovies.route) {
             val favoriteMovies by userViewModel.userInfo.collectAsState()
             FavoriteScreen(
-                favoriteMovies = favoriteMovies.listFavoriteMovies,
+                favoriteMovies = favoriteMovies!!.listFavoriteMovies,
                 navController = navController,
                 /* TODO Changed onEditInfo -> onEvent method */
 //                onRemoveFromFavorites = { movie -> userViewModel.removeFromFavorites(movie) }
@@ -90,11 +80,13 @@ fun AppStarter() {
         composable(Routes.Profile.route) {
             val userInfo by userViewModel.userInfo.collectAsState()
             ProfileScreen(
-                userInfo = userInfo,
+                userInfo = userInfo!!,
                 navController = navController,
                 /* TODO Changed onEditInfo -> onEvent method */
 //                onEditInfo = { newName, newEmail -> userViewModel.editUserInfo(newName, newEmail) }
-                onEditInfo = { newName, newEmail -> userViewModel.onEvent(ProfileScreenEditEvent.UserInfoChanged(newName, newEmail))}
+                onEditInfo = { newName, newEmail -> userViewModel.onEvent(
+                    ProfileScreenEditEvent.UserInfoChanged(newName, newEmail))
+                }
             )
         }
     }

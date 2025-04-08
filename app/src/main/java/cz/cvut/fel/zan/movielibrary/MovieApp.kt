@@ -11,6 +11,7 @@ class MovieApp : Application() {
         AppContainer.init(this)
         CoroutineScope(Dispatchers.IO).launch {
             AppContainer.movieDbDataSource
+            AppContainer.userDbDataSource
         }
     }
 }

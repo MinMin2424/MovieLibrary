@@ -1,11 +1,17 @@
 package cz.cvut.fel.zan.movielibrary.ui.viewModel
 
 import androidx.lifecycle.ViewModel
-import cz.cvut.fel.zan.movielibrary.R
+import androidx.lifecycle.viewModelScope
+import cz.cvut.fel.zan.movielibrary.AppContainer
 import cz.cvut.fel.zan.movielibrary.data.local.MovieInfo
 import cz.cvut.fel.zan.movielibrary.data.local.UserInfo
+import cz.cvut.fel.zan.movielibrary.data.local.getMinMin
+import cz.cvut.fel.zan.movielibrary.data.repository.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 /* TODO onEvent method */
 sealed class ProfileScreenEditEvent {
@@ -17,18 +23,35 @@ sealed class ProfileScreenEditEvent {
 
 class UserViewModel() : ViewModel() {
 
-    private val _userInfo = MutableStateFlow(
-        UserInfo(
-            name = "MinMin Tranova",
-            email = "goldenmaknae2424@gmail.com",
-            profileImage = R.drawable.user_profile,
-            registrationDate = "04.03.2025",
-            favoriteMoviesCount = 0,
-            commentsCount = 0,
-            listFavoriteMovies = emptyList()
-        )
+    private val userRepository = UserRepository(
+        AppContainer.userDbDataSource
     )
-    val userInfo: StateFlow<UserInfo> get() = _userInfo
+
+//    val userInfo: StateFlow<UserInfo> = userRepository.getUser()
+//        .stateIn(
+//            scope = viewModelScope,
+//            started = SharingStarted.WhileSubscribed(5000),
+//            initialValue = getMinMin()
+//        )
+
+    private val _userInfo = MutableStateFlow<UserInfo?>(null)
+    val userInfo: StateFlow<UserInfo?> = _userInfo
+
+    init {
+        viewModelScope.launch {
+            initializeUser()
+            userRepository.getUser().collect { user ->
+                _userInfo.value = user
+            }
+        }
+    }
+
+    private suspend fun initializeUser() {
+        val count = userRepository.getUserCount()
+        if (count == 0) {
+            userRepository.insertUser(getMinMin())
+        }
+    }
 
     fun onEvent(event: ProfileScreenEditEvent) {
         when (event) {
@@ -48,30 +71,31 @@ class UserViewModel() : ViewModel() {
     }
 
     private fun editUserInfo(newName: String, newEmail: String) {
-        _userInfo.value = _userInfo.value.copy(name = newName, email = newEmail)
+        viewModelScope.launch {
+            _userInfo.value?.let {
+                userRepository.updateUser(it.copy(
+                    name = newName,
+                    email = newEmail
+                ))
+            }
+        }
     }
 
     private fun addToFavorites(movie: MovieInfo) {
-        val currentFavorites = _userInfo.value.listFavoriteMovies
-        if (currentFavorites.none { it.movieId == movie.movieId }) {
-            _userInfo.value = _userInfo.value.copy(
-                listFavoriteMovies = currentFavorites + movie,
-                favoriteMoviesCount = _userInfo.value.favoriteMoviesCount + 1
-            )
+        viewModelScope.launch {
+            userRepository.addToFavorites(movie)
         }
     }
 
     private fun removeFromFavorites(movie: MovieInfo) {
-        val updateFavorites = _userInfo.value.listFavoriteMovies.filter { it.movieId != movie.movieId }
-        _userInfo.value = _userInfo.value.copy(
-            listFavoriteMovies = updateFavorites,
-            favoriteMoviesCount = _userInfo.value.favoriteMoviesCount - 1
-        )
+        viewModelScope.launch {
+            userRepository.removeFromFavorites(movie)
+        }
     }
 
     private fun addComment() {
-        _userInfo.value = _userInfo.value.copy(
-            commentsCount = _userInfo.value.commentsCount + 1
-        )
+        viewModelScope.launch {
+            userRepository.addComment()
+        }
     }
 }

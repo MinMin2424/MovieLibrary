@@ -33,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,13 +46,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import cz.cvut.fel.zan.movielibrary.R
 import cz.cvut.fel.zan.movielibrary.ui.navigation.Routes
-import cz.cvut.fel.zan.movielibrary.data.local.GetAllMovies
 import cz.cvut.fel.zan.movielibrary.data.local.MovieInfo
 import cz.cvut.fel.zan.movielibrary.ui.utils.isLandscape
+import cz.cvut.fel.zan.movielibrary.ui.viewModel.MovieViewModel
 
 @Composable
 fun MainScreen(
@@ -127,9 +129,10 @@ fun MainScreenContent(
 
 @Composable
 fun ListMovies(
-    navController: NavController
+    navController: NavController,
+    viewModel: MovieViewModel = viewModel()
 ) {
-    val movies = GetAllMovies()
+    val movies by viewModel.movies.collectAsState()
     if (isLandscape()) {
         LazyVerticalGrid(
             columns = GridCells.Fixed(5),
@@ -170,6 +173,7 @@ fun MovieItem(
             .padding(8.dp)
             .width(110.dp)
             .clickable {
+                println("navigating to movie with ID: ${movieInfo.movieId}")
                 navController.navigate("${Routes.Description.route}/${movieInfo.movieId}")
             },
         horizontalAlignment = Alignment.CenterHorizontally

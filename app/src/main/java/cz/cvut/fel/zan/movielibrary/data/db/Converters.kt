@@ -4,6 +4,7 @@ import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import cz.cvut.fel.zan.movielibrary.data.local.Genre
+import cz.cvut.fel.zan.movielibrary.data.local.MovieInfo
 
 class Converters {
     private val gson = Gson()
@@ -27,6 +28,17 @@ class Converters {
     @TypeConverter
     fun toStringList(value: String) : List<String> {
         val listType = object : TypeToken<List<String>>() {}.type
+        return gson.fromJson(value, listType)
+    }
+
+    @TypeConverter
+    fun fromMovieList(value: List<MovieInfo>?) : String {
+        return gson.toJson(value)
+    }
+
+    @TypeConverter
+    fun toMovieList(value: String) : List<MovieInfo> {
+        val listType = object : TypeToken<List<MovieInfo>>() {}.type
         return gson.fromJson(value, listType)
     }
 }

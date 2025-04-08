@@ -6,11 +6,15 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
-@Database(entities = [MovieEntity::class], version = 1, exportSchema = false)
+@Database(
+    entities = [MovieEntity::class, UserEntity::class],
+    version = 2,
+    exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class MovieLibraryDatabase : RoomDatabase() {
 
     abstract fun movieDao() : MovieDao
+    abstract fun userDao() : UserDao
 
     companion object {
         @Volatile

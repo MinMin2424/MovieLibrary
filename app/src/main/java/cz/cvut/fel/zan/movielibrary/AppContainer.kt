@@ -2,6 +2,7 @@ package cz.cvut.fel.zan.movielibrary
 
 import android.content.Context
 import cz.cvut.fel.zan.movielibrary.data.datasource.MovieDbDataSource
+import cz.cvut.fel.zan.movielibrary.data.datasource.UserDbDataSource
 import cz.cvut.fel.zan.movielibrary.data.db.MovieLibraryDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -18,6 +19,15 @@ object AppContainer {
         }
         dataSource
     }
+
+    val userDbDataSource: UserDbDataSource by lazy {
+        val dataSource = UserDbDataSource(movieLibraryDatabase.userDao())
+        CoroutineScope(Dispatchers.IO).launch {
+            dataSource.initializeDatabaseIfEmpty()
+        }
+        dataSource
+    }
+
     fun init(context: Context) {
         movieLibraryDatabase = MovieLibraryDatabase.getDatabase(context)
     }

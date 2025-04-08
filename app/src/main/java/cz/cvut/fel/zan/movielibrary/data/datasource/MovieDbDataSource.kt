@@ -28,11 +28,7 @@ class MovieDbDataSource(
     }
 
     suspend fun getMovieById(id: Int) : MovieInfo {
-        println("Finding movie with ID: $id")
         val entity = movieDao.getMovieById(id)
-            .also {
-                println("MOVIE IS FOUND")
-            }
         return entity.toMovieInfo()
     }
 

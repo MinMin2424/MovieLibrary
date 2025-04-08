@@ -34,11 +34,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import cz.cvut.fel.zan.movielibrary.R
 import cz.cvut.fel.zan.movielibrary.data.local.Genre
+import cz.cvut.fel.zan.movielibrary.R
+import cz.cvut.fel.zan.movielibrary.ui.navigation.Routes
 import cz.cvut.fel.zan.movielibrary.data.local.GetAllMovies
 import cz.cvut.fel.zan.movielibrary.data.local.MovieInfo
-import cz.cvut.fel.zan.movielibrary.ui.navigation.Routes
 
 @Composable
 fun ListGenresScreen(
