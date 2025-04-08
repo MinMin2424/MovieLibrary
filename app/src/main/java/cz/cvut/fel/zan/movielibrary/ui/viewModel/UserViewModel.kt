@@ -2,8 +2,8 @@ package cz.cvut.fel.zan.movielibrary.ui.viewModel
 
 import androidx.lifecycle.ViewModel
 import cz.cvut.fel.zan.movielibrary.R
-import cz.cvut.fel.zan.movielibrary.data.MovieInfo
-import cz.cvut.fel.zan.movielibrary.data.UserInfo
+import cz.cvut.fel.zan.movielibrary.data.local.MovieInfo
+import cz.cvut.fel.zan.movielibrary.data.local.UserInfo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 

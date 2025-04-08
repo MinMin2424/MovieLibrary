@@ -1,14 +1,17 @@
 package cz.cvut.fel.zan.movielibrary.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import cz.cvut.fel.zan.movielibrary.data.local.MovieInfo
 import cz.cvut.fel.zan.movielibrary.ui.screens.DescriptionScreen
 import cz.cvut.fel.zan.movielibrary.ui.screens.FavoriteScreen
 import cz.cvut.fel.zan.movielibrary.ui.screens.ListGenresScreen
@@ -18,6 +21,8 @@ import cz.cvut.fel.zan.movielibrary.ui.viewModel.MovieEditEvent
 import cz.cvut.fel.zan.movielibrary.ui.viewModel.MovieViewModel
 import cz.cvut.fel.zan.movielibrary.ui.viewModel.ProfileScreenEditEvent
 import cz.cvut.fel.zan.movielibrary.ui.viewModel.UserViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @Composable
 fun AppStarter() {
@@ -41,17 +46,24 @@ fun AppStarter() {
             arguments = listOf(navArgument("movieId") { type = NavType.IntType} )
         ) {navBackStackEntry ->
             val movieId = navBackStackEntry.arguments?.getInt("movieId") ?: 0
-            val movie = movieViewModel.getMovieById(movieId)
-            requireNotNull(movie) { "Movie with ID $movieId not found" }
-            DescriptionScreen(
-                movieId = movieId,
-                navController = navController,
-                /* TODO Changed onEditInfo -> onEvent method */
+            val movie by produceState<MovieInfo?>(initialValue = null) {
+                value = withContext(Dispatchers.IO) {
+                    movieViewModel.loadMovieById(movieId)
+                }
+            }
+            movie?.let { nonNullMovie ->
+                DescriptionScreen(
+                    movie = nonNullMovie,
+                    navController = navController,
+                    /* TODO Changed onEditInfo -> onEvent method */
 //                onAddToFavorites = { userViewModel.addToFavorites(movie) },
-                onAddToFavorites = { userViewModel.onEvent(ProfileScreenEditEvent.AddToFavoritesChanged(movie)) },
-                movieViewModel = movieViewModel,
-                userViewModel = userViewModel
-            )
+                    onAddToFavorites = { userViewModel.onEvent(ProfileScreenEditEvent.AddToFavoritesChanged(nonNullMovie)) },
+                    movieViewModel = movieViewModel,
+                    userViewModel = userViewModel
+                )
+            }
+
+
         }
         /* FAVORITE MOVIES SCREEN */
         composable(Routes.FavoriteMovies.route) {

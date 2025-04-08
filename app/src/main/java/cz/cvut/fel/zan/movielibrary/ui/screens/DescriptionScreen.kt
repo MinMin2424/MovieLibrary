@@ -54,7 +54,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import cz.cvut.fel.zan.movielibrary.R
-import cz.cvut.fel.zan.movielibrary.data.MovieInfo
+import cz.cvut.fel.zan.movielibrary.data.local.MovieInfo
 import cz.cvut.fel.zan.movielibrary.ui.components.RenderSnackBar
 import cz.cvut.fel.zan.movielibrary.ui.utils.isLandscape
 import cz.cvut.fel.zan.movielibrary.ui.viewModel.MovieEditEvent
@@ -65,7 +65,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun DescriptionScreen(
-    movieId: Int,
+    movie: MovieInfo,
     navController: NavController,
     onAddToFavorites: () -> Unit,
     movieViewModel: MovieViewModel,
@@ -74,10 +74,6 @@ fun DescriptionScreen(
 
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
-
-    val movie by movieViewModel.movies.collectAsState()
-    val selectedMovie = movie.find { it.movieId == movieId }
-    requireNotNull(selectedMovie) { "Movie with ID $movieId not found" }
     var newComment by rememberSaveable { mutableStateOf("") }
 
     Scaffold (
@@ -109,14 +105,14 @@ fun DescriptionScreen(
         ) {
             DescriptionScreenContent(
                 paddingValues = innerPadding,
-                movieInfo = selectedMovie,
+                movieInfo = movie,
                 newComment = newComment,
                 onCommentChange = { newComment = it },
                 onAddComment = {
                     /* TODO Changed onEditInfo -> onEvent method */
 //                    movieViewModel.addComment(movieId, it)
 //                    userViewModel.addComment()
-                    movieViewModel.onEvent(MovieEditEvent.AddCommentChanged(movieId, it))
+                    movieViewModel.onEvent(MovieEditEvent.AddCommentChanged(movie.movieId, it))
                     userViewModel.onEvent(ProfileScreenEditEvent.AddCommentChanged(1))
                     scope.launch {
                         snackbarHostState.showSnackbar(

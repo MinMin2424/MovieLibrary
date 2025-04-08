@@ -1,4 +1,4 @@
-package cz.cvut.fel.zan.movielibrary.data
+package cz.cvut.fel.zan.movielibrary.data.local
 
 import cz.cvut.fel.zan.movielibrary.R
 

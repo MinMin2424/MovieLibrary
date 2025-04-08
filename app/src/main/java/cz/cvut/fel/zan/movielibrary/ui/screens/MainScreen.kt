@@ -49,8 +49,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import cz.cvut.fel.zan.movielibrary.R
 import cz.cvut.fel.zan.movielibrary.ui.navigation.Routes
-import cz.cvut.fel.zan.movielibrary.data.GetAllMovies
-import cz.cvut.fel.zan.movielibrary.data.MovieInfo
+import cz.cvut.fel.zan.movielibrary.data.local.GetAllMovies
+import cz.cvut.fel.zan.movielibrary.data.local.MovieInfo
 import cz.cvut.fel.zan.movielibrary.ui.utils.isLandscape
 
 @Composable

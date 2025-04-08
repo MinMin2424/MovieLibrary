@@ -1,4 +1,4 @@
-package cz.cvut.fel.zan.movielibrary.data
+package cz.cvut.fel.zan.movielibrary.data.local
 
 data class MovieInfo(
     val movieId : Int = 0,
