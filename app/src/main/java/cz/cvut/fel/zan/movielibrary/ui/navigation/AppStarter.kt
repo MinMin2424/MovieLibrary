@@ -46,10 +46,14 @@ fun AppStarter() {
             arguments = listOf(navArgument("movieId") { type = NavType.IntType} )
         ) {navBackStackEntry ->
             val movieId = navBackStackEntry.arguments?.getInt("movieId") ?: 0
-            val movie by produceState<MovieInfo?>(initialValue = null) {
-                value = withContext(Dispatchers.IO) {
-                    movieViewModel.loadMovieById(movieId)
-                }
+//            val movie by produceState<MovieInfo?>(initialValue = null) {
+//                value = withContext(Dispatchers.IO) {
+//                    movieViewModel.loadMovieById(movieId)
+//                }
+//            }
+            val movie by movieViewModel.currentMovie.collectAsState()
+            LaunchedEffect(movieId) {
+                movieViewModel.loadMovieById(movieId)
             }
             movie?.let { nonNullMovie ->
                 DescriptionScreen(

@@ -98,31 +98,35 @@ fun DescriptionScreen(
         modifier = Modifier.fillMaxSize()
 
     ) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(colorResource(R.color.dark_ocean))
-        ) {
-            DescriptionScreenContent(
-                paddingValues = innerPadding,
-                movieInfo = movie,
-                newComment = newComment,
-                onCommentChange = { newComment = it },
-                onAddComment = {
-                    /* TODO Changed onEditInfo -> onEvent method */
+        val currentMovie by movieViewModel.currentMovie.collectAsState()
+        currentMovie?.let {  nonNullMovie ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(colorResource(R.color.dark_ocean))
+            ) {
+                DescriptionScreenContent(
+                    paddingValues = innerPadding,
+                    movieInfo = nonNullMovie,
+                    newComment = newComment,
+                    onCommentChange = { newComment = it },
+                    onAddComment = {
+                        /* TODO Changed onEditInfo -> onEvent method */
 //                    movieViewModel.addComment(movieId, it)
 //                    userViewModel.addComment()
-                    movieViewModel.onEvent(MovieEditEvent.AddCommentChanged(movie.movieId, it))
-                    userViewModel.onEvent(ProfileScreenEditEvent.AddCommentChanged(1))
-                    scope.launch {
-                        snackbarHostState.showSnackbar(
-                            message = "Comment added successfully",
-                            duration = SnackbarDuration.Short
-                        )
+                        movieViewModel.onEvent(MovieEditEvent.AddCommentChanged(nonNullMovie.movieId, it))
+                        userViewModel.onEvent(ProfileScreenEditEvent.AddCommentChanged(1))
+                        scope.launch {
+                            snackbarHostState.showSnackbar(
+                                message = "Comment added successfully",
+                                duration = SnackbarDuration.Short
+                            )
+                        }
+                        newComment = ""
                     }
-                    newComment = ""
-                }
-            )
+                )
+            }
+
         }
     }
 }
