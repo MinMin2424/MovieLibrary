@@ -2,7 +2,7 @@ package cz.cvut.fel.zan.movielibrary.data.datasource
 
 import cz.cvut.fel.zan.movielibrary.data.db.UserDao
 import cz.cvut.fel.zan.movielibrary.data.db.UserEntity
-import cz.cvut.fel.zan.movielibrary.data.local.getAllUsers
+import cz.cvut.fel.zan.movielibrary.data.local.GetAllUsers
 import cz.cvut.fel.zan.movielibrary.data.local.UserInfo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -14,7 +14,7 @@ class UserDbDataSource(
     suspend fun initializeDatabaseIfEmpty() {
         val count = userDao.getUserCount()
         if (count == 0) {
-            getAllUsers().forEach { userInfo ->
+            GetAllUsers().forEach { userInfo ->
                 userDao.insertUser(userInfo.toUserEntity())
             }
         }

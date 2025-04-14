@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-/* TODO onEvent method */
 sealed class ProfileScreenEditEvent {
     data class UserInfoChanged(val newName: String, val newEmail: String) : ProfileScreenEditEvent()
     data class AddToFavoritesChanged(val movie: MovieInfo) : ProfileScreenEditEvent()

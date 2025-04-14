@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
@@ -209,7 +210,8 @@ fun BottomBarMainScreen(
     ) {
         NavigationBarItem(
             icon = {
-                Icon(Icons.Filled.Home,
+                Icon(
+                    imageVector = Icons.Filled.Home,
                     contentDescription = stringResource(R.string.home),
                     tint = colorResource(R.color.white)
                 )
@@ -228,7 +230,29 @@ fun BottomBarMainScreen(
         )
         NavigationBarItem(
             icon = {
-                Icon(Icons.Filled.Search,
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = stringResource(R.string.search),
+                    tint = colorResource(R.color.white)
+                )
+            },
+            label = {
+                Text(text = "Search",
+                    color = colorResource(R.color.white)
+                ) },
+            selected = currentRoute == Routes.Search.route,
+            onClick = {
+                /* Open Search Screen */
+                navController.navigate(Routes.Search.route) {
+                    popUpTo(navController.graph.startDestinationId)
+                    launchSingleTop = true
+                }
+            }
+        )
+        NavigationBarItem(
+            icon = {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.List,
                     contentDescription = stringResource(R.string.genre),
                     tint = colorResource(R.color.white)
                 )
@@ -248,7 +272,8 @@ fun BottomBarMainScreen(
         )
         NavigationBarItem(
             icon = {
-                Icon(Icons.Filled.Star,
+                Icon(
+                    imageVector = Icons.Filled.Star,
                     contentDescription = stringResource(R.string.favorite_films),
                     tint = colorResource(R.color.white)
                 )
@@ -266,10 +291,10 @@ fun BottomBarMainScreen(
                 }
             }
         )
-        NavigationBarItem(
+        /*NavigationBarItem(
             icon = {
                 Icon(
-                    Icons.Filled.AccountCircle,
+                    imageVector = Icons.Filled.AccountCircle,
                     contentDescription = stringResource(R.string.profile),
                     tint = colorResource(R.color.white)
                 )
@@ -280,12 +305,12 @@ fun BottomBarMainScreen(
                 ) },
             selected = currentRoute == Routes.Profile.route,
             onClick = {
-                /* Open User Profile Screen */
+                *//* Open User Profile Screen *//*
                 navController.navigate(Routes.Profile.route) {
                     popUpTo(navController.graph.startDestinationId)
                     launchSingleTop = true
                 }
             }
-        )
+        )*/
     }
 }

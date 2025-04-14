@@ -15,9 +15,11 @@ import cz.cvut.fel.zan.movielibrary.ui.screens.FavoriteScreen
 import cz.cvut.fel.zan.movielibrary.ui.screens.ListGenresScreen
 import cz.cvut.fel.zan.movielibrary.ui.screens.MainScreen
 import cz.cvut.fel.zan.movielibrary.ui.screens.ProfileScreen
+import cz.cvut.fel.zan.movielibrary.ui.screens.SearchScreen
 import cz.cvut.fel.zan.movielibrary.ui.viewModel.MovieViewModel
 import cz.cvut.fel.zan.movielibrary.ui.viewModel.ProfileScreenEditEvent
 import cz.cvut.fel.zan.movielibrary.ui.viewModel.UserViewModel
+import okhttp3.Route
 
 @Composable
 fun AppStarter() {
@@ -49,7 +51,6 @@ fun AppStarter() {
                 DescriptionScreen(
                     movie = nonNullMovie,
                     navController = navController,
-                    /* TODO Changed onEditInfo -> onEvent method */
 //                onAddToFavorites = { userViewModel.addToFavorites(movie) },
                     onAddToFavorites = { userViewModel.onEvent(ProfileScreenEditEvent.AddToFavoritesChanged(nonNullMovie)) },
                     movieViewModel = movieViewModel,
@@ -65,7 +66,6 @@ fun AppStarter() {
             FavoriteScreen(
                 favoriteMovies = favoriteMovies!!.listFavoriteMovies,
                 navController = navController,
-                /* TODO Changed onEditInfo -> onEvent method */
 //                onRemoveFromFavorites = { movie -> userViewModel.removeFromFavorites(movie) }
                 onRemoveFromFavorites = { movie -> userViewModel.onEvent(ProfileScreenEditEvent.RemoveFromFavoritesChanged(movie)) }
             )
@@ -82,11 +82,17 @@ fun AppStarter() {
             ProfileScreen(
                 userInfo = userInfo!!,
                 navController = navController,
-                /* TODO Changed onEditInfo -> onEvent method */
 //                onEditInfo = { newName, newEmail -> userViewModel.editUserInfo(newName, newEmail) }
                 onEditInfo = { newName, newEmail -> userViewModel.onEvent(
                     ProfileScreenEditEvent.UserInfoChanged(newName, newEmail))
                 }
+            )
+        }
+
+        /* SEARCH SCREEN */
+        composable(Routes.Search.route) {
+            SearchScreen(
+                navController = navController
             )
         }
     }
