@@ -13,11 +13,9 @@ data class MovieInfo(
     val localId : Int = 0,
     val imdbId : String = "",
     val movieTitle : String = "",
-//    val movieImage : Int = 0,
     val movieImage : String = "",
     val rating : String = "",
     val totalSeasons : Int = 0,
-//    val genre : List<Genre> = emptyList(),
     val genre : String = "",
     val country : String = "",
     val year : String = "",
@@ -43,18 +41,6 @@ data class MovieInfo(
                 description = response.plot
             )
         }
-
-        /*private fun parseGenres(genreString: String) : List<Genre> {
-            return genreString.split(",")
-                .map { it.trim() }
-                .mapNotNull { genreName ->
-                    val normalizedGenre = genreName
-                        .uppercase()
-                        .replace(" ", "_")
-                        .replace("-", "_")
-                    Genre.entries.find { it.name == normalizedGenre }
-                }
-        }*/
 
         private fun generateLocalId(imdbId: String?) : Int {
             return imdbId?.replace("tt", "")

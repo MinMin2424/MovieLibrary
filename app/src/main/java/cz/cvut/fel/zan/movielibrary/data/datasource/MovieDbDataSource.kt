@@ -148,6 +148,14 @@ class MovieDbDataSource(
         }
     }
 
+    suspend fun getAllTitles() : List<String> {
+        return movieDao.getAllTitles()
+    }
+
+    fun getAllImdbIs() : List<String> {
+        return movieDao.getAllImdbId()
+    }
+
     suspend fun getMovieById(id: Int) : MovieInfo {
         val entity = movieDao.getMovieById(id)
         return entity.toMovieInfo()

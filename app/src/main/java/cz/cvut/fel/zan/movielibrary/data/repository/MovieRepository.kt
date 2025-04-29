@@ -15,6 +15,14 @@ class MovieRepository(
         return movieDbDataSource.getAllMovies()
     }
 
+    suspend fun getAllTitles() : List<String> {
+        return movieDbDataSource.getAllTitles()
+    }
+
+    fun getAllImdbIds() : List<String> {
+        return movieDbDataSource.getAllImdbIs()
+    }
+
     suspend fun getMovieById(localId: Int) =
         movieDbDataSource.getMovieById(localId)
 
@@ -30,14 +38,18 @@ class MovieRepository(
         movieDbDataSource.deleteMovieById(localId)
     }
 
-    suspend fun fetchAndStoreMovieFromWeb(title: String) : ApiCallResult<MovieInfo> {
+    suspend fun fetchAndStoreMovieFromWeb(title: String) : MovieResult {
+        val existingTitles = movieDbDataSource.getAllTitles()
+        if (title in existingTitles) {
+            return MovieResult.MOVIE_ALREADY_EXISTS
+        }
         return when (val result = movieRemoteDataSource.fetchMovieByTitle(title)) {
             is ApiCallResult.Success -> {
                 movieDbDataSource.insertMovie(result.data)
-                ApiCallResult.success(result.data)
+                MovieResult.SUCCESS
             }
-            is ApiCallResult.Error -> result
-            ApiCallResult.Loading -> ApiCallResult.loading()
+            else -> MovieResult.MOVIE_NOT_FOUND
+
         }
     }
 
@@ -51,13 +63,4 @@ class MovieRepository(
             ApiCallResult.Loading -> ApiCallResult.loading()
         }
     }
-
-    /*fun filterMoviesByGenre(genre: Genre) : Flow<List<MovieInfo>> {
-        return movieDbDataSource.getAllMovies()
-            .map { movies ->
-                movies.filter { movie ->
-                    movie.genre.contains(genre)
-                }
-            }
-    }*/
 }

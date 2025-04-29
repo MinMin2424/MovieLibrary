@@ -13,7 +13,7 @@ interface MovieDao {
     fun getAllMovies() : Flow<List<MovieEntity>>
 
     @Query("SELECT movieTitle FROM movie")
-    fun getAllTitles() : List<String>
+    suspend fun getAllTitles() : List<String>
 
     @Query("SELECT imdbId FROM movie")
     fun getAllImdbId() : List<String>
