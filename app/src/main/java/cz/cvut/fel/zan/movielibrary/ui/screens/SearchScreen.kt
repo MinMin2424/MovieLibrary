@@ -1,6 +1,5 @@
 package cz.cvut.fel.zan.movielibrary.ui.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -22,11 +21,8 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -50,16 +46,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.room.Query
+import coil3.compose.AsyncImage
 import cz.cvut.fel.zan.movielibrary.R
 import cz.cvut.fel.zan.movielibrary.data.local.MovieInfo
 import cz.cvut.fel.zan.movielibrary.ui.navigation.Routes
@@ -115,7 +109,7 @@ fun SearchScreen(
                         SearchMovieItem(
                             movieInfo = movie,
                             onClick = {
-                                navController.navigate("${Routes.Description.route}/${movie.movieId}")
+                                navController.navigate("${Routes.Description.route}/${movie.localId}")
                             }
                         )
                     }
@@ -130,7 +124,7 @@ fun SearchScreen(
                         SearchMovieItem(
                             movieInfo = movie,
                             onClick = {
-                                navController.navigate("${Routes.Description.route}/${movie.movieId}")
+                                navController.navigate("${Routes.Description.route}/${movie.localId}")
                             }
                         )
                     }
@@ -217,8 +211,8 @@ fun SearchMovieItem(
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
-                painter = painterResource(movieInfo.movieImage),
+            AsyncImage(
+                model = movieInfo.movieImage,
                 contentDescription = movieInfo.movieTitle,
                 modifier = Modifier
                     .size(150.dp)
@@ -234,12 +228,16 @@ fun SearchMovieItem(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "Episodes: ${movieInfo.episodes}",
+                    text = "Country: ${movieInfo.country}",
                     color = Color.White)
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = "Rating: ${movieInfo.rating}",
                     color = Color.White)
+                Text(
+                    text = "Year: ${movieInfo.year}",
+                    color = Color.White)
+                Spacer(modifier = Modifier.height(4.dp))
             }
         }
     }

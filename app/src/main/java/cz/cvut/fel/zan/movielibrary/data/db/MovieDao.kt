@@ -9,14 +9,20 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MovieDao {
-    @Query("SELECT * FROM movie ORDER BY id ASC")
+    @Query("SELECT * FROM movie ORDER BY localId ASC")
     fun getAllMovies() : Flow<List<MovieEntity>>
+
+    @Query("SELECT movieTitle FROM movie")
+    fun getAllTitles() : List<String>
+
+    @Query("SELECT imdbId FROM movie")
+    fun getAllImdbId() : List<String>
 
     @Query("SELECT COUNT(*) FROM movie")
     suspend fun getMovieCount() : Int
 
-    @Query("SELECT * FROM movie WHERE id = :id")
-    suspend fun getMovieById(id: Int) : MovieEntity
+    @Query("SELECT * FROM movie WHERE localId = :localId")
+    suspend fun getMovieById(localId: Int) : MovieEntity
 
     @Update
     suspend fun updateMovie(movieEntity: MovieEntity)
@@ -24,6 +30,6 @@ interface MovieDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMovie(movieEntity: MovieEntity)
 
-    @Query("DELETE FROM movie WHERE id = :id")
-    suspend fun deleteMovieById(id: Int)
+    @Query("DELETE FROM movie WHERE localId = :localId")
+    suspend fun deleteMovieById(localId: Int)
 }

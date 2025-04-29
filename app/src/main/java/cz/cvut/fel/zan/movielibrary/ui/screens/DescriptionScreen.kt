@@ -3,7 +3,6 @@
 package cz.cvut.fel.zan.movielibrary.ui.screens
 
 import androidx.compose.material3.Button
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -46,13 +45,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil3.compose.AsyncImage
 import cz.cvut.fel.zan.movielibrary.R
 import cz.cvut.fel.zan.movielibrary.data.local.MovieInfo
 import cz.cvut.fel.zan.movielibrary.ui.components.RenderSnackBar
@@ -114,7 +113,7 @@ fun DescriptionScreen(
                         /* TODO Changed onEditInfo -> onEvent method */
 //                    movieViewModel.addComment(movieId, it)
 //                    userViewModel.addComment()
-                        movieViewModel.onEvent(MovieEditEvent.AddCommentChanged(nonNullMovie.movieId, it))
+                        movieViewModel.onEvent(MovieEditEvent.AddCommentChanged(nonNullMovie.localId, it))
                         userViewModel.onEvent(ProfileScreenEditEvent.AddCommentChanged(1))
                         scope.launch {
                             snackbarHostState.showSnackbar(
@@ -169,14 +168,14 @@ fun DescriptionScreenContent(
 }
 
 @Composable
-fun RenderImage(picture: Int, name: String) {
+fun RenderImage(picture: String, name: String) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 64.dp)
     ) {
-        Image(
-            painter = painterResource(picture),
+        AsyncImage(
+            model = picture,
             contentDescription = name,
             modifier = Modifier
                 .fillMaxWidth()
@@ -207,27 +206,35 @@ fun RenderTitle(movieTitle: String, textAlign: TextAlign) {
 @Composable
 fun RenderInfo(movieInfo: MovieInfo) {
     val genresFormatted = movieInfo.genre
-        .joinToString(", ") { it.name.lowercase() }
+//        .joinToString(", ") { it.name.lowercase() }
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 32.dp)
     ) {
-        Text (
+        Text(
             text = "Rating: ${movieInfo.rating}",
-            color = colorResource(R.color.white),)
+            color = colorResource(R.color.white),
+        )
         Spacer(modifier = Modifier.height(4.dp))
-        Text (
-            text = "Episodes: ${movieInfo.episodes}",
-            color = colorResource(R.color.white),)
+        Text(
+            text = "Total seasons: ${movieInfo.totalSeasons}",
+            color = colorResource(R.color.white),
+        )
         Spacer(modifier = Modifier.height(4.dp))
-        Text (
+        Text(
             text = "Genres: $genresFormatted",
-            color = colorResource(R.color.white),)
+            color = colorResource(R.color.white),
+        )
         Spacer(modifier = Modifier.height(4.dp))
-        Text (
+        Text(
             text = "Country: ${movieInfo.country}",
-            color = colorResource(R.color.white),)
+            color = colorResource(R.color.white),
+        )
+        Text(
+            text = "Year: ${movieInfo.year}",
+            color = colorResource(R.color.white),
+        )
     }
 }
 
@@ -325,8 +332,8 @@ fun RenderImageAndInfo(
             modifier = Modifier
                 .padding(end = 16.dp),
         ) {
-            Image(
-                painter = painterResource(movieInfo.movieImage),
+            AsyncImage(
+                model = movieInfo.movieImage,
                 contentDescription = movieInfo.movieTitle,
                 modifier = Modifier
                     .size(180.dp)

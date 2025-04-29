@@ -26,7 +26,7 @@ class UserRepository(
     suspend fun addToFavorites(movie: MovieInfo) {
         val currentUser = userDbDataSource.getFirstUser().first()
         val updatedFavorites = currentUser.listFavoriteMovies.toMutableList();
-        if (updatedFavorites.none { it.movieId == movie.movieId }) {
+        if (updatedFavorites.none { it.localId == movie.localId }) {
             updatedFavorites.add(movie)
             val updatedUser = currentUser.copy(
                 listFavoriteMovies = updatedFavorites,
@@ -38,7 +38,7 @@ class UserRepository(
 
     suspend fun removeFromFavorites(movie: MovieInfo) {
         val currentUser = userDbDataSource.getFirstUser().first()
-        val updatedFavorites = currentUser.listFavoriteMovies.filter { it.movieId != movie.movieId }
+        val updatedFavorites = currentUser.listFavoriteMovies.filter { it.localId != movie.localId }
         userDbDataSource.updateUser(
             currentUser.copy(
                 listFavoriteMovies = updatedFavorites,

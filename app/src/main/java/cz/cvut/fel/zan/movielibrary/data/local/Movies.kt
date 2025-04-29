@@ -1,13 +1,11 @@
 package cz.cvut.fel.zan.movielibrary.data.local
 
-import cz.cvut.fel.zan.movielibrary.R
-
 fun GetAllMovies() : List<MovieInfo> {
     return listOf(
         Alien_Romulus(),
         Jurassic_World(),
         Meg2(),
-        Beast(),
+        /*Beast(),
         Conan(),
         The_Penthouse(),
         Doraemon(),
@@ -15,18 +13,19 @@ fun GetAllMovies() : List<MovieInfo> {
         Hidden_Love(),
         Titanic(),
         Love_Game(),
-        Dragon_Ball()
+        Dragon_Ball()*/
     )
 }
 
 fun Alien_Romulus() : MovieInfo {
     return MovieInfo(
-        movieId = 1,
+        localId = 1,
         movieTitle = "Alien Romulus",
-        movieImage = R.drawable.alien_romulus,
+//        movieImage = R.drawable.alien_romulus,
+        movieImage = "",
         rating = "5/5",
-        episodes = 1,
-        genre = listOf(Genre.SCI_FI, Genre.HORROR, Genre.THRILLER),
+        totalSeasons = 1,
+//        genre = listOf(Genre.SCI_FI, Genre.HORROR, Genre.THRILLER),
         country = "USA",
         description = "\"Alien: Romulus\" is a new installment in the iconic \"Alien\" franchise, returning to the terrifying roots of the series. The story is set in a dark and dangerous space environment, where a group of astronauts encounters deadly extraterrestrial creatures. The film combines tension, action, and the signature atmosphere of fear that the franchise is known for.",
         comments = listOf(
@@ -39,12 +38,13 @@ fun Alien_Romulus() : MovieInfo {
 
 fun Jurassic_World() : MovieInfo {
     return MovieInfo(
-        movieId = 2,
+        localId = 2,
         movieTitle = "Jurassic World: Dominion",
-        movieImage = R.drawable.jurassic_world,
+//        movieImage = R.drawable.jurassic_world,
+        movieImage = "",
         rating = "3,5/5",
-        episodes = 1,
-        genre = listOf(Genre.ACTION, Genre.ADVENTURE, Genre.SCI_FI),
+        totalSeasons = 1,
+//        genre = listOf(Genre.ACTION, Genre.ADVENTURE, Genre.SCI_FI),
         country = "USA",
         description = "The \"Jurassic World\" series is a continuation of the iconic \"Jurassic Park\" franchise. It revolves around a fully functioning dinosaur theme park, where genetically engineered dinosaurs escape and wreak havoc. The films explore themes of human ambition, nature, and survival, with plenty of action and dinosaur-driven thrills.",
         comments = listOf(
@@ -59,12 +59,13 @@ fun Jurassic_World() : MovieInfo {
 
 fun Meg2() : MovieInfo {
     return MovieInfo(
-        movieId = 3,
+        localId = 3,
         movieTitle = "Meg 2",
-        movieImage = R.drawable.meg_2,
+//        movieImage = R.drawable.meg_2,
+        movieImage = "",
         rating = "4/5",
-        episodes = 1,
-        genre = listOf(Genre.ACTION, Genre.HORROR, Genre.SCI_FI),
+        totalSeasons = 1,
+//        genre = listOf(Genre.ACTION, Genre.HORROR, Genre.SCI_FI),
         country = "USA, China (co-production)",
         description = "Meg 2: The Trench is the sequel to the 2018 film The Meg. It follows Jonas Taylor (Jason Statham) and a team of scientists as they explore the depths of the ocean, only to encounter not just one, but multiple megalodons and other prehistoric sea creatures. The film combines underwater adventure, survival horror, and over-the-top action as the team battles these ancient predators.",
         comments = listOf(
@@ -79,9 +80,10 @@ fun Meg2() : MovieInfo {
     )
 }
 
+/*
 fun Beast() : MovieInfo {
     return MovieInfo(
-        movieId = 4,
+        localId = 4,
         movieTitle = "Beast",
         movieImage = R.drawable.beast,
         rating = "5/5",
@@ -103,7 +105,7 @@ fun Beast() : MovieInfo {
 
 fun Conan() : MovieInfo {
     return MovieInfo(
-        movieId = 5,
+        localId = 5,
         movieTitle = "Detective Conan",
         movieImage = R.drawable.conan,
         rating = "4,5/5",
@@ -123,7 +125,7 @@ fun Conan() : MovieInfo {
 
 fun The_Penthouse() : MovieInfo {
     return MovieInfo(
-        movieId = 6,
+        localId = 6,
         movieTitle = "The Penthouse",
         movieImage = R.drawable.the_penthouse,
         rating = "5/5",
@@ -145,7 +147,7 @@ fun The_Penthouse() : MovieInfo {
 
 fun Doraemon() : MovieInfo {
     return MovieInfo(
-        movieId = 7,
+        localId = 7,
         movieTitle  = "Doraemon",
         movieImage = R.drawable.doraemon,
         rating = "5/5",
@@ -165,7 +167,7 @@ fun Doraemon() : MovieInfo {
 
 fun Love_U_7_Times() : MovieInfo {
     return MovieInfo(
-        movieId = 8,
+        localId = 8,
         movieTitle = "Love you 7 times",
         movieImage = R.drawable.love_you_seven_times,
         rating = "3/5",
@@ -184,7 +186,7 @@ fun Love_U_7_Times() : MovieInfo {
 
 fun Hidden_Love() : MovieInfo {
     return MovieInfo(
-        movieId = 9,
+        localId = 9,
         movieTitle = "Hidden Love",
         movieImage = R.drawable.hidden_love,
         rating = "3/5",
@@ -204,7 +206,7 @@ fun Hidden_Love() : MovieInfo {
 
 fun Titanic() : MovieInfo {
     return MovieInfo(
-        movieId = 10,
+        localId = 10,
         movieTitle = "Titanic",
         movieImage = R.drawable.titanic,
         rating = "5/5",
@@ -222,7 +224,7 @@ fun Titanic() : MovieInfo {
 
 fun Love_Game() : MovieInfo {
     return MovieInfo(
-        movieId = 11,
+        localId = 11,
         movieTitle = "Love Game in Eastern Fantasy",
         movieImage = R.drawable.love_game,
         rating = "5/5",
@@ -241,7 +243,7 @@ fun Love_Game() : MovieInfo {
 
 fun Dragon_Ball() : MovieInfo {
     return MovieInfo(
-        movieId = 12,
+        localId = 12,
         movieTitle = "Dragon Ball",
         movieImage = R.drawable.dragon_ball,
         rating = "5/5",
@@ -256,4 +258,4 @@ fun Dragon_Ball() : MovieInfo {
             "Underdeveloped female characters."
         )
     )
-}
+}*/

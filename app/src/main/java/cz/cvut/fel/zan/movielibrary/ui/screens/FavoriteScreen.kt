@@ -1,6 +1,5 @@
 package cz.cvut.fel.zan.movielibrary.ui.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -52,6 +51,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil3.compose.AsyncImage
 import cz.cvut.fel.zan.movielibrary.R
 import cz.cvut.fel.zan.movielibrary.ui.navigation.Routes
 import cz.cvut.fel.zan.movielibrary.data.local.MovieInfo
@@ -189,14 +189,14 @@ fun FavoriteMovieItem(
             )
             .padding(16.dp)
             .clickable {
-                navController.navigate("${Routes.Description.route}/${movieInfo.movieId}")
+                navController.navigate("${Routes.Description.route}/${movieInfo.localId}")
             }
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
-                painter = painterResource(movieInfo.movieImage),
+            AsyncImage(
+                model = movieInfo.movieImage,
                 contentDescription = movieInfo.movieTitle,
                 modifier = Modifier
                     .size(150.dp)
@@ -212,7 +212,7 @@ fun FavoriteMovieItem(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "Episodes: ${movieInfo.episodes}",
+                    text = "Country: ${movieInfo.country}",
                     color = Color.White)
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(

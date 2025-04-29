@@ -1,6 +1,5 @@
 package cz.cvut.fel.zan.movielibrary.ui.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -21,28 +20,32 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import coil3.compose.AsyncImage
 import cz.cvut.fel.zan.movielibrary.data.local.Genre
 import cz.cvut.fel.zan.movielibrary.R
 import cz.cvut.fel.zan.movielibrary.ui.navigation.Routes
 import cz.cvut.fel.zan.movielibrary.data.local.GetAllMovies
 import cz.cvut.fel.zan.movielibrary.data.local.MovieInfo
+import cz.cvut.fel.zan.movielibrary.ui.viewModel.MovieViewModel
+import kotlin.collections.flatMap
 
 @Composable
 fun ListGenresScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: MovieViewModel = viewModel()
 ) {
     Scaffold (
         topBar = { TopBarMainScreen(navController) },
@@ -55,7 +58,8 @@ fun ListGenresScreen(
         ) {
             ListGenreScreenContent(
                 paddingValues = innerPadding,
-                navController = navController
+                navController = navController,
+                viewModel = viewModel
             )
         }
     }
@@ -64,11 +68,20 @@ fun ListGenresScreen(
 @Composable
 fun ListGenreScreenContent(
     paddingValues: PaddingValues,
-    navController: NavController
+    navController: NavController,
+    viewModel: MovieViewModel
 ) {
 
-    val genres = Genre.entries.toList()
-    val movies = remember { GetAllMovies() }
+    /*val genres = Genre.entries.toList()
+    val movies = remember { GetAllMovies() }*/
+
+    val movies = viewModel.movies.collectAsState()
+    val movieList = movies.value
+    val genres = movieList
+        .flatMap { it.genre.split(",") }
+        .map { it.trim() }
+        .distinct()
+        .sorted()
 
     Column(
         modifier = Modifier
@@ -79,9 +92,9 @@ fun ListGenreScreenContent(
     ) {
         for (genre in genres) {
 
-            val moviesForGenre = movies.filter { it.genre.contains(genre) }
+            val moviesForGenre = movieList.filter { it.genre.contains(genre) }
 
-            TextWithHorizontalLines(text = genre.toString())
+            TextWithHorizontalLines(text = genre)
 
             if (moviesForGenre.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(8.dp))
@@ -159,11 +172,11 @@ fun MovieItemGenre (
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.width(100.dp)
             .clickable {
-                navController.navigate("${Routes.Description.route}/${movie.movieId}")
+                navController.navigate("${Routes.Description.route}/${movie.localId}")
             }
     ) {
-        Image(
-            painter = painterResource(id = movie.movieImage),
+        AsyncImage(
+            model = movie.movieImage,
             contentDescription = movie.movieTitle,
             modifier = Modifier.width(75.dp).height(90.dp)
                 .clip(MaterialTheme.shapes.medium),

@@ -50,6 +50,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import coil3.compose.AsyncImage
 import cz.cvut.fel.zan.movielibrary.R
 import cz.cvut.fel.zan.movielibrary.ui.navigation.Routes
 import cz.cvut.fel.zan.movielibrary.data.local.MovieInfo
@@ -174,13 +175,13 @@ fun MovieItem(
             .padding(8.dp)
             .width(110.dp)
             .clickable {
-                println("navigating to movie with ID: ${movieInfo.movieId}")
-                navController.navigate("${Routes.Description.route}/${movieInfo.movieId}")
+                println("navigating to movie with ID: ${movieInfo.localId}")
+                navController.navigate("${Routes.Description.route}/${movieInfo.localId}")
             },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Image(
-            painter = painterResource(id = movieInfo.movieImage),
+        AsyncImage(
+            model = movieInfo.movieImage,
             contentDescription = movieInfo.movieTitle,
             contentScale = ContentScale.Crop,
             modifier = Modifier
