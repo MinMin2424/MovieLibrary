@@ -9,6 +9,7 @@ import cz.cvut.fel.zan.movielibrary.data.local.MovieInfo
 import cz.cvut.fel.zan.movielibrary.data.remote.RetrofitClient
 import cz.cvut.fel.zan.movielibrary.data.repository.ApiCallResult
 import cz.cvut.fel.zan.movielibrary.data.repository.MovieRepository
+import cz.cvut.fel.zan.movielibrary.data.repository.MovieResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -68,7 +69,17 @@ class MovieViewModel() : ViewModel() {
     private val _movieResult = MutableStateFlow<ApiCallResult<MovieInfo>?>(null)
     val movieResult: StateFlow<ApiCallResult<MovieInfo>?> = _movieResult.asStateFlow()
 
-    fun fetchMovieFromWeb(title: String) {
+    fun fetchAndInsertMovieByTitle(
+        title: String,
+        onResult: (MovieResult) -> Unit
+    ) {
+        viewModelScope.launch {
+            val result = movieRepository.fetchAndStoreMovieFromWeb(title)
+            onResult(result)
+        }
+    }
+
+    /*fun fetchMovieFromWeb(title: String) {
         viewModelScope.launch {
             _movieResult.value = ApiCallResult.Loading
             try {
@@ -88,14 +99,5 @@ class MovieViewModel() : ViewModel() {
                 _movieResult.value = ApiCallResult.error(e)
             }
         }
-    }
-
-    /*fun filterByGenre(genre: Genre) : StateFlow<List<MovieInfo>> {
-        return movieRepository.filterMoviesByGenre(genre)
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5000),
-                initialValue = emptyList()
-            )
     }*/
 }

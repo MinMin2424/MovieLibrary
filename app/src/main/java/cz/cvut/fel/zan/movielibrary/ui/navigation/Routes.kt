@@ -7,4 +7,6 @@ sealed class Routes(val route: String) {
     data object ListGenres: Routes("ListGenres")
     data object Profile: Routes("Profile")
     data object Search: Routes("Search")
+    data object AddMovie: Routes("AddMovie")
+    data object SplashScreen: Routes("SplashScreen")
 }

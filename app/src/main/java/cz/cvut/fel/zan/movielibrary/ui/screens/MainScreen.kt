@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
@@ -100,11 +101,20 @@ fun TopBarMainScreen(navController: NavController) {
         },
         actions = {
             IconButton(onClick = {
-                /*  Open profile */
+                /* Open profile */
                 navController.navigate(Routes.Profile.route)
             }) {
                 Icon(Icons.Filled.AccountCircle,
                     contentDescription = stringResource(R.string.profile),
+                    tint = colorResource(R.color.white)
+                )
+            }
+            IconButton(onClick = {
+                /* Add movie */
+                navController.navigate(Routes.AddMovie.route)
+            }) {
+                Icon(Icons.Filled.Add,
+                    contentDescription = stringResource(R.string.add_movie),
                     tint = colorResource(R.color.white)
                 )
             }
