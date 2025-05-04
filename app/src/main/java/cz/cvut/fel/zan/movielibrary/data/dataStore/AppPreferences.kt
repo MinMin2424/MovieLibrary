@@ -24,3 +24,7 @@ fun getLastOpenedScreen(context: Context) = context.screenDataStore.data
     .map { prefs ->
         prefs[AppPreferencesKeys.LAST_OPENED_SCREEN]
     }
+
+suspend fun clearPreferences(context: Context) {
+    context.screenDataStore.edit { it.clear() }
+}

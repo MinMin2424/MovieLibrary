@@ -63,6 +63,7 @@ dependencies {
 //    implementation(libs.converter.gson)
     implementation(libs.org.jetbrains.kotlinx.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.androidx.work.runtime.ktx)
     ksp(libs.androidx.room.compiler)
     implementation(libs.gson)
     implementation(libs.androidx.datastore.preferences)

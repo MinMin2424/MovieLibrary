@@ -1,13 +1,21 @@
+
 package cz.cvut.fel.zan.movielibrary.ui.screens
 
+import android.content.Intent
+import android.os.Build
+import android.provider.Settings
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -46,11 +54,20 @@ import cz.cvut.fel.zan.movielibrary.ui.navigation.Routes
 import cz.cvut.fel.zan.movielibrary.ui.viewModel.MovieViewModel
 import kotlinx.coroutines.launch
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.TextButton
 import androidx.compose.ui.graphics.Color
+import androidx.core.app.NotificationManagerCompat
 import cz.cvut.fel.zan.movielibrary.data.repository.MovieResult
+import cz.cvut.fel.zan.movielibrary.ui.notification.showMovieAddedNotification
+import androidx.compose.material3.BasicAlertDialog
+import androidx.compose.runtime.LaunchedEffect
+import cz.cvut.fel.zan.movielibrary.ui.notification.scheduleMovieNotification
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddMovieScreen(
     navController: NavController,
@@ -58,8 +75,17 @@ fun AddMovieScreen(
 ) {
     var title by rememberSaveable { mutableStateOf("") }
     val context = LocalContext.current
+    var showPermissionDialog by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(Unit) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (!NotificationManagerCompat.from(context).areNotificationsEnabled()) {
+                showPermissionDialog = true
+            }
+        }
+    }
 
     Scaffold (
         topBar = { TopBarAddMovieScreen(navController) },
@@ -93,14 +119,13 @@ fun AddMovieScreen(
                         scope.launch {
                             when (result) {
                                 MovieResult.SUCCESS -> {
-                                    snackbarHostState.showSnackbar("Movie added!")
+                                    scheduleMovieNotification(context, title)
+//                                    snackbarHostState.showSnackbar("Movie added!")
                                     navController.popBackStack()
                                 }
-
                                 MovieResult.MOVIE_ALREADY_EXISTS -> {
                                     snackbarHostState.showSnackbar("Movie already exists!")
                                 }
-
                                 MovieResult.MOVIE_NOT_FOUND -> {
                                     snackbarHostState.showSnackbar("Movie not found or failed!")
                                 }
@@ -113,6 +138,82 @@ fun AddMovieScreen(
                     .padding(horizontal = 16.dp)
             ) {
                 Text("Add movie")
+            }
+        }
+        if (showPermissionDialog) {
+            BasicAlertDialog(
+                onDismissRequest = { showPermissionDialog = false },
+                modifier = Modifier.wrapContentSize()
+            ) {
+                Surface(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.outlineVariant,
+                            shape = MaterialTheme.shapes.medium
+                        ),
+                    shape = MaterialTheme.shapes.medium,
+                    tonalElevation = 8.dp,
+                    shadowElevation = 4.dp,
+                    color = MaterialTheme.colorScheme.surfaceContainerHigh
+                ) {
+                    Column (modifier = Modifier.padding(24.dp)) {
+                        Text(
+                            text = "Notification Permission Required",
+                            style = MaterialTheme.typography.headlineSmall,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Spacer(Modifier.height(16.dp))
+                        Text(
+                            text = "To receive information about the new movie, please enable notifications in app settings",
+                            style = MaterialTheme.typography.bodyMedium.copy(lineHeight = 22.sp),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Spacer(Modifier.height(24.dp))
+                        Row (
+                            horizontalArrangement = Arrangement.End,
+                            modifier = Modifier.fillMaxWidth()
+                        ){
+                            TextButton(
+                                onClick = {showPermissionDialog = false},
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = MaterialTheme.colorScheme.errorContainer,
+                                    contentColor = MaterialTheme.colorScheme.onErrorContainer
+                                ),
+                                elevation = ButtonDefaults.buttonElevation(
+                                    defaultElevation = 2.dp,
+                                    pressedElevation = 4.dp
+                                )
+                            ) {
+                                Text("Cancel")
+                            }
+                            Spacer(Modifier.width(8.dp))
+                            TextButton(
+                                onClick = {
+                                    val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+                                        putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+                                    }
+                                    context.startActivity(intent)
+                                    showPermissionDialog = false
+                                },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = MaterialTheme.colorScheme.errorContainer,
+                                    contentColor = MaterialTheme.colorScheme.onErrorContainer
+                                ),
+                                elevation = ButtonDefaults.buttonElevation(
+                                    defaultElevation = 2.dp,
+                                    pressedElevation = 4.dp
+                                )
+                            ) {
+                                Text(
+                                    text = "Open Settings",
+                                    color = MaterialTheme.colorScheme.error
+                                )
+                            }
+                        }
+                    }
+                }
             }
         }
     }
