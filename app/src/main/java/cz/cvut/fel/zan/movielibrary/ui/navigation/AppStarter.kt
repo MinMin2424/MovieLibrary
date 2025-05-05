@@ -29,39 +29,23 @@ import cz.cvut.fel.zan.movielibrary.ui.screens.SearchScreen
 import cz.cvut.fel.zan.movielibrary.ui.screens.SplashScreen
 import cz.cvut.fel.zan.movielibrary.ui.viewModel.MovieViewModel
 import cz.cvut.fel.zan.movielibrary.ui.viewModel.ProfileScreenEditEvent
+import cz.cvut.fel.zan.movielibrary.ui.viewModel.ThemeViewModel
 import cz.cvut.fel.zan.movielibrary.ui.viewModel.UserViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
 import okhttp3.Route
 
 @Composable
-fun AppStarter() {
+fun AppStarter(
+    themeViewModel: ThemeViewModel
+) {
     val navController = rememberNavController()
     val userViewModel: UserViewModel = viewModel()
     val movieViewModel: MovieViewModel = viewModel()
 
     val context = LocalContext.current
-//    var isInitialized by remember { mutableStateOf(false) }
     var isLoading by remember { mutableStateOf(true) }
-    val lastOpenedScreen by getLastOpenedScreen(context)
-        .collectAsState(initial = null)
-
-    /*LaunchedEffect(lastOpenedScreen) {
-        delay(1000L)
-        if (!isInitialized) {
-            isInitialized = true
-            lastOpenedScreen?.let { route ->
-                if (route != Routes.Main.route) {
-                    navController.navigate(route) {
-                        popUpTo(Routes.Main.route) {
-                            inclusive = true
-                        }
-                    }
-                }
-            }
-        }
-    }
-*/
+    val lastOpenedScreen by getLastOpenedScreen(context).collectAsState(initial = null)
 
     LaunchedEffect(Unit) {
         delay(1000L)
@@ -181,7 +165,8 @@ fun AppStarter() {
 //                onEditInfo = { newName, newEmail -> userViewModel.editUserInfo(newName, newEmail) }
                 onEditInfo = { newName, newEmail -> userViewModel.onEvent(
                     ProfileScreenEditEvent.UserInfoChanged(newName, newEmail))
-                }
+                },
+                themeViewModel = themeViewModel
             )
         }
         /* SEARCH SCREEN */

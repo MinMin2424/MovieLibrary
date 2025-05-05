@@ -100,14 +100,16 @@ fun AddMovieScreen(
         Column(
             modifier = Modifier.fillMaxSize()
                 .padding(innerPadding)
-                .background(colorResource(R.color.dark_ocean))
+                /*.background(colorResource(R.color.dark_ocean))*/
+                .background(MaterialTheme.colorScheme.background)
         ) {
             OutlinedTextField(
                 value = title,
                 onValueChange = { title = it },
                 label = { Text("Enter a title to add a movie") },
                 shape = RoundedCornerShape(10.dp),
-                textStyle = LocalTextStyle.current.copy(Color.White),
+                /*textStyle = LocalTextStyle.current.copy(Color.White),*/
+                textStyle = LocalTextStyle.current.copy(MaterialTheme.colorScheme.primary),
                 modifier = Modifier.fillMaxWidth()
                     .padding(horizontal = 16.dp)
                     .padding(top = 70.dp)
@@ -178,7 +180,7 @@ fun AddMovieScreen(
                             TextButton(
                                 onClick = {showPermissionDialog = false},
                                 colors = ButtonDefaults.buttonColors(
-                                    containerColor = MaterialTheme.colorScheme.errorContainer,
+                                    containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
                                     contentColor = MaterialTheme.colorScheme.onErrorContainer
                                 ),
                                 elevation = ButtonDefaults.buttonElevation(
@@ -227,7 +229,8 @@ fun TopBarAddMovieScreen(
     TopAppBar(
         title = { Text(
             text = "Add movie",
-            color = colorResource(R.color.white),
+            /*color = colorResource(R.color.white),*/
+            color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.Bold,
             fontSize = 26.sp
         ) },
@@ -239,7 +242,8 @@ fun TopBarAddMovieScreen(
                 Icon(
                     imageVector = Icons.AutoMirrored.Default.ArrowBack,
                     contentDescription = stringResource(R.string.navigate_back),
-                    tint = colorResource(R.color.white)
+                    /*tint = colorResource(R.color.white)*/
+                    tint = MaterialTheme.colorScheme.primary
                 )
             }
         },
@@ -251,12 +255,14 @@ fun TopBarAddMovieScreen(
                 Icon(
                     Icons.Filled.AccountCircle,
                     contentDescription = stringResource(R.string.profile),
-                    tint = colorResource(R.color.white)
+                    /*tint = colorResource(R.color.white)*/
+                    tint = MaterialTheme.colorScheme.primary
                 )
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = colorResource(R.color.purple_blue)
+            /*containerColor = colorResource(R.color.purple_blue)*/
+            containerColor = MaterialTheme.colorScheme.secondaryContainer
         )
     )
 }

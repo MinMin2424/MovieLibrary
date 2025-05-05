@@ -83,7 +83,8 @@ fun SearchScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(colorResource(R.color.dark_ocean))
+                /*.background(colorResource(R.color.dark_ocean))*/
+                .background(MaterialTheme.colorScheme.background)
         ) {
             val filteredMovies = remember(searchQuery, movies) {
                 if (searchQuery.isBlank()) {
@@ -154,28 +155,30 @@ fun SearchTopBar(
                     modifier = Modifier
                         .width(350.dp),
                     colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        focusedTextColor = Color.White,
-                        focusedPlaceholderColor = Color.White.copy(alpha = 0.7f),
-                        unfocusedPlaceholderColor = Color.White.copy(alpha = 0.7f)
+                        focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        focusedIndicatorColor = MaterialTheme.colorScheme.surfaceVariant,
+                        unfocusedIndicatorColor = MaterialTheme.colorScheme.surfaceVariant,
+                        focusedTextColor = MaterialTheme.colorScheme.primary,
+                        focusedPlaceholderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f),
+                        unfocusedPlaceholderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
                     ),
-                    textStyle = TextStyle(color = Color.White, fontSize = 18.sp),
+                    textStyle = TextStyle(color = MaterialTheme.colorScheme.primary, fontSize = 18.sp),
                     singleLine = true,
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Default.Search,
                             contentDescription = stringResource(R.string.search),
-                            tint = Color.White
+                            /*tint = Color.White*/
+                            tint = MaterialTheme.colorScheme.primary
                         )
                     }
                 )
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = colorResource(R.color.purple_blue)
+            /*containerColor = colorResource(R.color.purple_blue)*/
+            containerColor = MaterialTheme.colorScheme.secondaryContainer
         ),
         actions = {
             IconButton(onClick = {
@@ -185,7 +188,8 @@ fun SearchTopBar(
                 Icon(
                     Icons.Filled.AccountCircle,
                     contentDescription = stringResource(R.string.profile),
-                    tint = colorResource(R.color.white)
+                    /*tint = colorResource(R.color.white)*/
+                    tint = MaterialTheme.colorScheme.primary
                 )
             }
         }
@@ -202,7 +206,8 @@ fun SearchMovieItem(
             .fillMaxWidth()
             .border(
                 width = 1.dp,
-                color = Color.Gray,
+                /*color = Color.Gray,*/
+                color = MaterialTheme.colorScheme.secondary,
                 shape = MaterialTheme.shapes.medium
             )
             .padding(16.dp)
@@ -224,19 +229,26 @@ fun SearchMovieItem(
                 Text(
                     text = movieInfo.movieTitle,
                     fontWeight = FontWeight.Bold,
-                    color = Color.White
+                    /*color = Color.White*/
+                    color = MaterialTheme.colorScheme.primary
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = "Country: ${movieInfo.country}",
-                    color = Color.White)
+                    /*color = Color.White)*/
+                    color = MaterialTheme.colorScheme.primary
+                )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = "Rating: ${movieInfo.rating}",
-                    color = Color.White)
+                    /*color = Color.White*/
+                    color = MaterialTheme.colorScheme.primary
+                )
                 Text(
                     text = "Year: ${movieInfo.year}",
-                    color = Color.White)
+                    /*color = Color.White*/
+                    color = MaterialTheme.colorScheme.primary
+                )
                 Spacer(modifier = Modifier.height(4.dp))
             }
         }

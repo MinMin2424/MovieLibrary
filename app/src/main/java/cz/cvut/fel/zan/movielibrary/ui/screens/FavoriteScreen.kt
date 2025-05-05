@@ -91,7 +91,8 @@ fun FavoriteScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(colorResource(R.color.dark_ocean))
+                /*.background(colorResource(R.color.dark_ocean))*/
+                .background(MaterialTheme.colorScheme.background)
         ) {
             if (favoriteMovies.isEmpty()) {
                 RenderEmptyListMovies()
@@ -123,7 +124,8 @@ fun RenderEmptyListMovies() {
             .padding(horizontal = 32.dp)
             .border(
                 width = 2.dp,
-                color = Color.Gray,
+                /*color = Color.Gray,*/
+                color = MaterialTheme.colorScheme.secondary,
                 shape = RoundedCornerShape(32.dp)
             )
             .height(320.dp)
@@ -138,7 +140,8 @@ fun RenderEmptyListMovies() {
                 text = "Search for your own favorite movies and add them here to save",
                 fontSize = 18.sp,
                 textAlign = TextAlign.Center,
-                color = Color.Gray,
+                /*color = Color.Gray,*/
+                color = MaterialTheme.colorScheme.secondary,
                 fontStyle = FontStyle.Italic,
                 modifier = Modifier
                     .padding(12.dp)
@@ -147,7 +150,8 @@ fun RenderEmptyListMovies() {
             Icon(
                 painter = painterResource(R.drawable.add_circle),
                 contentDescription = stringResource(R.string.adding_movie),
-                tint = Color.Gray,
+                /*tint = Color.Gray,*/
+                tint = MaterialTheme.colorScheme.secondary,
                 modifier = Modifier
                     .size(64.dp)
             )
@@ -195,7 +199,8 @@ fun FavoriteMovieItem(
             .fillMaxWidth()
             .border(
                 width = 1.dp,
-                color = Color.Gray,
+                /*color = Color.Gray,*/
+                color = MaterialTheme.colorScheme.secondary,
                 shape = MaterialTheme.shapes.medium
             )
             .padding(16.dp)
@@ -217,22 +222,22 @@ fun FavoriteMovieItem(
                 Text(
                     text = movieInfo.movieTitle,
                     fontWeight = FontWeight.Bold,
-                    color = Color.White
+                    /*color = Color.White*/
+                    color = MaterialTheme.colorScheme.primary
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = "Country: ${movieInfo.country}",
-                    color = Color.White)
+                    /*color = Color.White*/
+                    color = MaterialTheme.colorScheme.primary
+                )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = "Rating: ${movieInfo.rating}",
-                    color = Color.White)
+                    /*color = Color.White*/
+                    color = MaterialTheme.colorScheme.primary
+                )
                 Spacer(modifier = Modifier.height(4.dp))
-                /*Button(
-                    onClick = { onRemoveFromFavorites(movieInfo) }
-                ) {
-                    Text(stringResource(R.string.remove))
-                }*/
                 Button( onClick = { showDialog = true } ) {
                     Text(stringResource(R.string.remove))
                 }
@@ -274,7 +279,7 @@ fun FavoriteMovieItem(
                                 TextButton(
                                     onClick = {showDialog = false},
                                     colors = ButtonDefaults.buttonColors(
-                                        containerColor = MaterialTheme.colorScheme.errorContainer,
+                                        containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
                                         contentColor = MaterialTheme.colorScheme.onErrorContainer
                                     ),
                                     elevation = ButtonDefaults.buttonElevation(
@@ -321,7 +326,8 @@ fun TopBarFavoriteScreen(
     TopAppBar(
         title = { Text(
             text = "Favorite movies",
-            color = colorResource(R.color.white),
+            /*color = colorResource(R.color.white),*/
+            color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.Bold,
             fontSize = 26.sp
         ) },
@@ -330,7 +336,8 @@ fun TopBarFavoriteScreen(
                 Icon(
                     Icons.Filled.Menu,
                     contentDescription = stringResource(R.string.menu),
-                    tint = colorResource(R.color.white)
+                    /*tint = colorResource(R.color.white)*/
+                    tint = MaterialTheme.colorScheme.primary
                 )
             }
         },
@@ -342,12 +349,14 @@ fun TopBarFavoriteScreen(
                 Icon(
                     Icons.Filled.AccountCircle,
                     contentDescription = stringResource(R.string.profile),
-                    tint = colorResource(R.color.white)
+                    /*tint = colorResource(R.color.white)*/
+                    tint = MaterialTheme.colorScheme.primary
                 )
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = colorResource(R.color.purple_blue)
+            /*containerColor = colorResource(R.color.purple_blue)*/
+            containerColor = MaterialTheme.colorScheme.secondaryContainer
         )
     )
 }

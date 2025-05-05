@@ -47,16 +47,19 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import cz.cvut.fel.zan.movielibrary.R
 import cz.cvut.fel.zan.movielibrary.data.local.UserInfo
 import cz.cvut.fel.zan.movielibrary.ui.utils.isLandscape
+import cz.cvut.fel.zan.movielibrary.ui.viewModel.ThemeViewModel
 
 @Composable
 fun ProfileScreen(
     userInfo: UserInfo,
     navController: NavController,
-    onEditInfo: (String, String) -> Unit
+    onEditInfo: (String, String) -> Unit,
+    themeViewModel: ThemeViewModel = viewModel()
 ) {
 
     var isEditing by rememberSaveable { mutableStateOf(false) }
@@ -71,7 +74,8 @@ fun ProfileScreen(
                 isEditing = false
                 editedName = userInfo.name
                 editedEmail = userInfo.email
-            }
+            },
+            themeViewModel = themeViewModel
         ) },
         bottomBar = { BottomBarMainScreen(navController) },
         modifier = Modifier.fillMaxSize()
@@ -79,7 +83,8 @@ fun ProfileScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(colorResource(R.color.dark_ocean))
+                /*.background(colorResource(R.color.dark_ocean))*/
+                .background(MaterialTheme.colorScheme.background)
         ) {
             ProfileScreenContent(
                 paddingValues = innerPadding,
@@ -211,7 +216,8 @@ fun RenderInfo(
         text = info,
         fontSize = fontSize.sp,
         fontWeight = fontWeight,
-        color = Color.White,
+        /*color = Color.White,*/
+        color = MaterialTheme.colorScheme.primary,
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 32.dp)
@@ -223,7 +229,8 @@ fun RenderStatisticItem(label: String, value: String) {
     Text(
         text = "$value  $label",
         fontSize = 16.sp,
-        color = Color.White,
+        /*color = Color.White,*/
+        color = MaterialTheme.colorScheme.primary,
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 32.dp)
@@ -246,8 +253,8 @@ fun RenderProfileInfo(
         OutlinedTextField(
             value = editedName,
             onValueChange = onNameChange,
-            textStyle = TextStyle(color = Color.Gray, fontSize = 14.sp),
-            label = { Text(text = "Name", color = Color.White, fontSize = 16.sp) },
+            textStyle = TextStyle(color = MaterialTheme.colorScheme.secondary, fontSize = 14.sp),
+            label = { Text(text = "Name", color = MaterialTheme.colorScheme.primary, fontSize = 16.sp) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 32.dp)
@@ -263,8 +270,8 @@ fun RenderProfileInfo(
         OutlinedTextField(
             value = editedEmail,
             onValueChange = onEmailChange,
-            textStyle = TextStyle(color = Color.Gray, fontSize = 14.sp),
-            label = { Text(text = "E-mail", color = Color.White, fontSize = 16.sp) },
+            textStyle = TextStyle(color = MaterialTheme.colorScheme.secondary, fontSize = 14.sp),
+            label = { Text(text = "E-mail", color = MaterialTheme.colorScheme.primary, fontSize = 16.sp) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 32.dp)
@@ -332,12 +339,15 @@ fun RenderProfileInfo(
 fun TopBarProfileScreen(
     isEditing : Boolean,
     onEditClick : () -> Unit,
-    onCancelClick : () -> Unit
+    onCancelClick : () -> Unit,
+    themeViewModel: ThemeViewModel
 ) {
+    val isDarkMode by themeViewModel.isDarkMode
     TopAppBar(
         title = { Text(
             text = "User profile",
-            color = colorResource(R.color.white),
+            /*color = colorResource(R.color.white),*/
+            color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.Bold,
             fontSize = 26.sp
         ) },
@@ -346,7 +356,8 @@ fun TopBarProfileScreen(
                 Icon(
                     Icons.Filled.Menu,
                     contentDescription = stringResource(R.string.menu),
-                    tint = colorResource(R.color.white)
+                    /*tint = colorResource(R.color.white)*/
+                    tint = MaterialTheme.colorScheme.primary
                 )
             }
         },
@@ -364,12 +375,26 @@ fun TopBarProfileScreen(
                     contentDescription = if (isEditing) stringResource(R.string.cancel) else stringResource(
                         R.string.edit_profile
                     ),
-                    tint = colorResource(R.color.white)
+                    /*tint = colorResource(R.color.white)*/
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
+            IconButton(onClick = {
+                themeViewModel.toggleTheme()
+            }) {
+                Icon(
+                    painter = painterResource(
+                        id = if (isDarkMode) R.drawable.light_mode else R.drawable.dark_mode
+                    ),
+                    contentDescription = if (isDarkMode) "Switch to Light Mode" else "Switch to Dark Mode",
+                    /*tint = colorResource(R.color.white)*/
+                    tint = MaterialTheme.colorScheme.primary
                 )
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = colorResource(R.color.purple_blue)
+            /*containerColor = colorResource(R.color.purple_blue)*/
+            containerColor = MaterialTheme.colorScheme.secondaryContainer
         )
     )
 }

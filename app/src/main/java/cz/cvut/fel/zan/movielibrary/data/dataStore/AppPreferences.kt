@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.map
 
 object AppPreferencesKeys {
     val LAST_OPENED_SCREEN = stringPreferencesKey("last_opened_screen")
+    val THEME_MODE = stringPreferencesKey("theme_mode")
 }
 
 val Context.screenDataStore : DataStore<Preferences> by preferencesDataStore(name = "screen_preferences")
@@ -23,6 +24,17 @@ suspend fun saveLastOpenedScreen(context: Context, route: String) {
 fun getLastOpenedScreen(context: Context) = context.screenDataStore.data
     .map { prefs ->
         prefs[AppPreferencesKeys.LAST_OPENED_SCREEN]
+    }
+
+suspend fun saveThemeMode(context: Context, isDarkMode: Boolean) {
+    context.screenDataStore.edit { preferences ->
+        preferences[AppPreferencesKeys.THEME_MODE] = if (isDarkMode) "dark" else "light"
+    }
+}
+
+fun getThemeMode(context: Context) = context.screenDataStore.data
+    .map { prefs ->
+        prefs[AppPreferencesKeys.THEME_MODE] ?: "dark"
     }
 
 suspend fun clearPreferences(context: Context) {

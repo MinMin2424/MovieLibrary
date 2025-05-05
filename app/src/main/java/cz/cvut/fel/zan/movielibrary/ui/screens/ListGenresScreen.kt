@@ -54,7 +54,8 @@ fun ListGenresScreen(
     ) { innerPadding ->
         Box(
             modifier = Modifier.fillMaxSize()
-                .background(colorResource(R.color.dark_ocean))
+                /*.background(colorResource(R.color.dark_ocean))*/
+                .background(MaterialTheme.colorScheme.background)
         ) {
             ListGenreScreenContent(
                 paddingValues = innerPadding,
@@ -71,10 +72,6 @@ fun ListGenreScreenContent(
     navController: NavController,
     viewModel: MovieViewModel
 ) {
-
-    /*val genres = Genre.entries.toList()
-    val movies = remember { GetAllMovies() }*/
-
     val movies = viewModel.movies.collectAsState()
     val movieList = movies.value
     val genres = movieList
@@ -121,7 +118,8 @@ fun ListGenreScreenContent(
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         text = "No movies for this genre yet.",
-                        color = Color.Gray,
+                        /*color = Color.Gray,*/
+                        color = MaterialTheme.colorScheme.secondary,
                         fontSize = 14.sp,
                         textAlign = TextAlign.Center
                     )
@@ -144,13 +142,15 @@ fun TextWithHorizontalLines(text : String) {
                 .weight(1f)
                 .padding(horizontal = 8.dp),
             thickness = 1.dp,
-            color = Color.Gray
+            /*color = Color.Gray*/
+            color = MaterialTheme.colorScheme.secondary
         )
         Text(
             text = text,
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.White,
+            /*color = Color.White,*/
+            color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.padding(horizontal = 8.dp)
         )
         HorizontalDivider(
@@ -158,7 +158,8 @@ fun TextWithHorizontalLines(text : String) {
                 .weight(1f)
                 .padding(horizontal = 8.dp),
             thickness = 1.dp,
-            color = Color.Gray
+            /*color = Color.Gray*/
+            color = MaterialTheme.colorScheme.secondary
         )
     }
 }
@@ -187,7 +188,8 @@ fun MovieItemGenre (
             text = movie.movieTitle,
             fontSize = 14.sp,
             textAlign = TextAlign.Center,
-            color = Color.White,
+            /*color = Color.White,*/
+            color = MaterialTheme.colorScheme.primary
         )
     }
 }

@@ -4,6 +4,7 @@ package cz.cvut.fel.zan.movielibrary.ui.screens
 
 import androidx.compose.material3.Button
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -30,6 +31,7 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -102,7 +104,8 @@ fun DescriptionScreen(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(colorResource(R.color.dark_ocean))
+                    /*.background(colorResource(R.color.dark_ocean))*/
+                    .background(MaterialTheme.colorScheme.background)
             ) {
                 DescriptionScreenContent(
                     paddingValues = innerPadding,
@@ -110,9 +113,6 @@ fun DescriptionScreen(
                     newComment = newComment,
                     onCommentChange = { newComment = it },
                     onAddComment = {
-                        /* TODO Changed onEditInfo -> onEvent method */
-//                    movieViewModel.addComment(movieId, it)
-//                    userViewModel.addComment()
                         movieViewModel.onEvent(MovieEditEvent.AddCommentChanged(nonNullMovie.localId, it))
                         userViewModel.onEvent(ProfileScreenEditEvent.AddCommentChanged(1))
                         scope.launch {
@@ -197,7 +197,8 @@ fun RenderTitle(movieTitle: String, textAlign: TextAlign) {
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             textAlign = textAlign,
-            color = colorResource(R.color.white),
+            /*color = colorResource(R.color.white),*/
+            color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.fillMaxWidth()
         )
     }
@@ -206,7 +207,6 @@ fun RenderTitle(movieTitle: String, textAlign: TextAlign) {
 @Composable
 fun RenderInfo(movieInfo: MovieInfo) {
     val genresFormatted = movieInfo.genre
-//        .joinToString(", ") { it.name.lowercase() }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -214,26 +214,31 @@ fun RenderInfo(movieInfo: MovieInfo) {
     ) {
         Text(
             text = "Rating: ${movieInfo.rating}",
-            color = colorResource(R.color.white),
+            /*color = colorResource(R.color.white),*/
+            color = MaterialTheme.colorScheme.primary
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = "Total seasons: ${movieInfo.totalSeasons}",
-            color = colorResource(R.color.white),
+            /*color = colorResource(R.color.white),*/
+            color = MaterialTheme.colorScheme.primary
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = "Genres: $genresFormatted",
-            color = colorResource(R.color.white),
+            /*color = colorResource(R.color.white),*/
+            color = MaterialTheme.colorScheme.primary
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = "Country: ${movieInfo.country}",
-            color = colorResource(R.color.white),
+            /*color = colorResource(R.color.white),*/
+            color = MaterialTheme.colorScheme.primary
         )
         Text(
             text = "Year: ${movieInfo.year}",
-            color = colorResource(R.color.white),
+            /*color = colorResource(R.color.white),*/
+            color = MaterialTheme.colorScheme.primary
         )
     }
 }
@@ -249,14 +254,16 @@ fun RenderDescription(description: String) {
             text = stringResource(R.string.description),
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp,
-            color = colorResource(R.color.white)
+            /*color = colorResource(R.color.white)*/
+            color = MaterialTheme.colorScheme.primary
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text (
             text = description,
             fontSize = 16.sp,
             modifier = Modifier.fillMaxWidth(),
-            color = colorResource(R.color.white),
+            /*color = colorResource(R.color.white),*/
+            color = MaterialTheme.colorScheme.primary
         )
     }
 
@@ -279,15 +286,21 @@ fun RenderComments(
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.fillMaxWidth(),
-            color = colorResource(R.color.white)
+            /*color = colorResource(R.color.white)*/
+            color = MaterialTheme.colorScheme.primary
         )
         Spacer(modifier = Modifier.height(8.dp))
         OutlinedTextField(
             value = newComment,
             onValueChange = onCommentChange,
             label = { Text ("Write your opinions about the movie") },
-            textStyle = LocalTextStyle.current.copy(Color.White),
-            modifier = Modifier.fillMaxWidth()
+            /*textStyle = LocalTextStyle.current.copy(Color.White),*/
+            textStyle = LocalTextStyle.current.copy(MaterialTheme.colorScheme.primary),
+            modifier = Modifier.fillMaxWidth(),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
+                focusedBorderColor = MaterialTheme.colorScheme.secondary
+            )
         )
         Spacer(modifier = Modifier.height(8.dp))
         Row(
@@ -307,12 +320,13 @@ fun RenderComments(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 4.dp),
-                color = colorResource(R.color.white)
+                /*color = colorResource(R.color.white)*/
+                color = MaterialTheme.colorScheme.primary
             )
             HorizontalDivider(
                 modifier = Modifier.padding(vertical = 8.dp),
                 thickness = 1.dp,
-                color = Color.Gray
+                color = MaterialTheme.colorScheme.secondary
             )
         }
     }
@@ -358,7 +372,8 @@ fun TopBarDescriptionScreen(
     TopAppBar(
         title = { Text(
             text = "Movie library",
-            color = colorResource(R.color.white),
+            /*color = colorResource(R.color.white),*/
+            color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.Bold,
             fontSize = 26.sp
         ) },
@@ -370,7 +385,8 @@ fun TopBarDescriptionScreen(
                 Icon(
                     imageVector = Icons.AutoMirrored.Default.ArrowBack,
                     contentDescription = stringResource(R.string.navigate_back),
-                    tint = colorResource(R.color.white)
+                    /*tint = colorResource(R.color.white)*/
+                    tint = MaterialTheme.colorScheme.primary
                 )
             }
         },
@@ -379,12 +395,14 @@ fun TopBarDescriptionScreen(
                 Icon(
                     imageVector = Icons.Filled.Star,
                     contentDescription = stringResource(R.string.add_to_favourites),
-                    tint = colorResource(R.color.white)
+                    /*tint = colorResource(R.color.white)*/
+                    tint = MaterialTheme.colorScheme.primary
                 )
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = colorResource(R.color.purple_blue)
+            /*containerColor = colorResource(R.color.purple_blue)*/
+            containerColor = MaterialTheme.colorScheme.secondaryContainer
         )
     )
 }

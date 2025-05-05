@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,7 +30,8 @@ fun SplashScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(colorResource(R.color.dark_ocean)),
+            /*.background(colorResource(R.color.dark_ocean)),*/
+            .background(MaterialTheme.colorScheme.background),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -41,7 +43,8 @@ fun SplashScreen(
         )
         Text(
             text = "Hi, welcome to the Movie Library",
-            color = colorResource(R.color.white),
+            /*color = colorResource(R.color.white),*/
+            color = MaterialTheme.colorScheme.primary,
             fontSize = 24.sp,
             modifier = Modifier.padding(top = 20.dp)
         )

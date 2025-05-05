@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
@@ -28,6 +29,7 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -70,7 +72,8 @@ fun MainScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(colorResource(R.color.dark_ocean))
+                /*.background(colorResource(R.color.dark_ocean))*/
+                .background(MaterialTheme.colorScheme.background)
         ) {
             MainScreenContent(
                 paddingValues = innerPadding,
@@ -86,7 +89,8 @@ fun TopBarMainScreen(navController: NavController) {
     TopAppBar(
         title = { Text(
             text = "Movie library",
-            color = colorResource(R.color.white),
+            /*color = colorResource(R.color.white),*/
+            color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.Bold,
             fontSize = 26.sp
         ) },
@@ -95,7 +99,8 @@ fun TopBarMainScreen(navController: NavController) {
                 Icon(
                     Icons.Filled.Menu,
                     contentDescription = stringResource(R.string.menu),
-                    tint = colorResource(R.color.white)
+                    /*tint = colorResource(R.color.white)*/
+                    tint = MaterialTheme.colorScheme.primary
                 )
             }
         },
@@ -106,7 +111,8 @@ fun TopBarMainScreen(navController: NavController) {
             }) {
                 Icon(Icons.Filled.AccountCircle,
                     contentDescription = stringResource(R.string.profile),
-                    tint = colorResource(R.color.white)
+                    /*tint = colorResource(R.color.white)*/
+                    tint = MaterialTheme.colorScheme.primary
                 )
             }
             IconButton(onClick = {
@@ -115,12 +121,14 @@ fun TopBarMainScreen(navController: NavController) {
             }) {
                 Icon(Icons.Filled.Add,
                     contentDescription = stringResource(R.string.add_movie),
-                    tint = colorResource(R.color.white)
+                    /*tint = colorResource(R.color.white)*/
+                    tint = MaterialTheme.colorScheme.primary
                 )
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = colorResource(R.color.purple_blue)
+            /*containerColor = colorResource(R.color.purple_blue)*/
+            containerColor = MaterialTheme.colorScheme.secondaryContainer
         )
     )
 }
@@ -203,7 +211,8 @@ fun MovieItem(
             text = movieInfo.movieTitle,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth(),
-            color = colorResource(R.color.white)
+            /*color = colorResource(R.color.white)*/
+            color = MaterialTheme.colorScheme.primary
         )
     }
 }
@@ -217,19 +226,33 @@ fun BottomBarMainScreen(
     val currentRoute = navBackStackEntry?.destination?.route
 
     NavigationBar(
-        containerColor = colorResource(R.color.purple_blue)
+        /*containerColor = colorResource(R.color.purple_blue)*/
+        containerColor = MaterialTheme.colorScheme.secondaryContainer
     ) {
         NavigationBarItem(
             icon = {
-                Icon(
-                    imageVector = Icons.Filled.Home,
-                    contentDescription = stringResource(R.string.home),
-                    tint = colorResource(R.color.white)
-                )
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(40.dp)
+                        .background(
+                            color = if (currentRoute == Routes.Main.route) MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
+                            else MaterialTheme.colorScheme.surfaceVariant,
+                            shape = CircleShape
+                        )
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Home,
+                        contentDescription = stringResource(R.string.home),
+                        /*tint = colorResource(R.color.white)*/
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
             },
             label = {
                 Text(text = "Home",
-                    color = colorResource(R.color.white)
+                    /*color = colorResource(R.color.white)*/
+                    color = MaterialTheme.colorScheme.primary
                 ) },
             selected = currentRoute == Routes.Main.route,
             onClick = {
@@ -241,15 +264,28 @@ fun BottomBarMainScreen(
         )
         NavigationBarItem(
             icon = {
-                Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = stringResource(R.string.search),
-                    tint = colorResource(R.color.white)
-                )
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(40.dp)
+                        .background(
+                            color = if (currentRoute == Routes.Search.route) MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
+                            else MaterialTheme.colorScheme.surfaceVariant,
+                            shape = CircleShape
+                        )
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = stringResource(R.string.search),
+                        /*tint = colorResource(R.color.white)*/
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
             },
             label = {
                 Text(text = "Search",
-                    color = colorResource(R.color.white)
+                    /*color = colorResource(R.color.white)*/
+                    color = MaterialTheme.colorScheme.primary
                 ) },
             selected = currentRoute == Routes.Search.route,
             onClick = {
@@ -262,15 +298,28 @@ fun BottomBarMainScreen(
         )
         NavigationBarItem(
             icon = {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.List,
-                    contentDescription = stringResource(R.string.genre),
-                    tint = colorResource(R.color.white)
-                )
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(40.dp)
+                        .background(
+                            color = if (currentRoute == Routes.ListGenres.route) MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
+                            else MaterialTheme.colorScheme.surfaceVariant,
+                            shape = CircleShape
+                        )
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.List,
+                        contentDescription = stringResource(R.string.genre),
+                        /*tint = colorResource(R.color.white)*/
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
             },
             label = {
                 Text(text = "Genres",
-                    color = colorResource(R.color.white)
+                    /*color = colorResource(R.color.white)*/
+                    color = MaterialTheme.colorScheme.primary
                 ) },
             selected = currentRoute == Routes.ListGenres.route,
             onClick = {
@@ -283,15 +332,28 @@ fun BottomBarMainScreen(
         )
         NavigationBarItem(
             icon = {
-                Icon(
-                    imageVector = Icons.Filled.Star,
-                    contentDescription = stringResource(R.string.favorite_films),
-                    tint = colorResource(R.color.white)
-                )
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(40.dp)
+                        .background(
+                            color = if (currentRoute == Routes.FavoriteMovies.route) MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
+                            else MaterialTheme.colorScheme.surfaceVariant,
+                            shape = CircleShape
+                        )
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Star,
+                        contentDescription = stringResource(R.string.favorite_films),
+                        /*tint = colorResource(R.color.white)*/
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
             },
             label = {
                 Text(text = "Favorite films",
-                    color = colorResource(R.color.white)
+                    /*color = colorResource(R.color.white)*/
+                    color = MaterialTheme.colorScheme.primary
                 ) },
             selected = currentRoute == Routes.FavoriteMovies.route,
             onClick = {
@@ -302,26 +364,5 @@ fun BottomBarMainScreen(
                 }
             }
         )
-        /*NavigationBarItem(
-            icon = {
-                Icon(
-                    imageVector = Icons.Filled.AccountCircle,
-                    contentDescription = stringResource(R.string.profile),
-                    tint = colorResource(R.color.white)
-                )
-            },
-            label = {
-                Text(text = "User profile",
-                    color = colorResource(R.color.white)
-                ) },
-            selected = currentRoute == Routes.Profile.route,
-            onClick = {
-                *//* Open User Profile Screen *//*
-                navController.navigate(Routes.Profile.route) {
-                    popUpTo(navController.graph.startDestinationId)
-                    launchSingleTop = true
-                }
-            }
-        )*/
     }
 }
