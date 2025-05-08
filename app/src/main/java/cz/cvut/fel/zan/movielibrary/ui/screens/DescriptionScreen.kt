@@ -2,9 +2,12 @@
 
 package cz.cvut.fel.zan.movielibrary.ui.screens
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.core.tween
 import androidx.compose.material3.Button
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -44,9 +47,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -64,14 +65,18 @@ import cz.cvut.fel.zan.movielibrary.ui.viewModel.ProfileScreenEditEvent
 import cz.cvut.fel.zan.movielibrary.ui.viewModel.UserViewModel
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun DescriptionScreen(
     movie: MovieInfo,
     navController: NavController,
     onAddToFavorites: () -> Unit,
     movieViewModel: MovieViewModel,
-    userViewModel: UserViewModel
-) {
+    userViewModel: UserViewModel,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
+
+    ) {
 
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -122,21 +127,25 @@ fun DescriptionScreen(
                             )
                         }
                         newComment = ""
-                    }
+                    },
+                    sharedTransitionScope = sharedTransitionScope,
+                    animatedVisibilityScope = animatedVisibilityScope,
                 )
             }
-
         }
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun DescriptionScreenContent(
     paddingValues: PaddingValues,
     movieInfo: MovieInfo,
     newComment: String,
     onCommentChange: (String) -> Unit,
-    onAddComment: (String) -> Unit
+    onAddComment: (String) -> Unit,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
 ) {
     LazyColumn(
         modifier = Modifier
@@ -145,10 +154,20 @@ fun DescriptionScreenContent(
     ) {
         item {
             if (isLandscape()) {
-                RenderImageAndInfo(movieInfo)
+                RenderImageAndInfo(
+                    movieInfo = movieInfo,
+                    sharedTransitionScope = sharedTransitionScope,
+                    animatedVisibilityScope = animatedVisibilityScope,
+                )
             } else {
                 Spacer(modifier = Modifier.height(32.dp))
-                RenderImage(movieInfo.movieImage, movieInfo.movieTitle)
+                RenderImage(
+                    picture = movieInfo.movieImage,
+                    name = movieInfo.movieTitle,
+                    id = movieInfo.localId,
+                    sharedTransitionScope = sharedTransitionScope,
+                    animatedVisibilityScope = animatedVisibilityScope,
+                )
                 Spacer(modifier = Modifier.height(16.dp))
                 RenderTitle(movieInfo.movieTitle, TextAlign.Center)
                 Spacer(modifier = Modifier.height(8.dp))
@@ -167,21 +186,37 @@ fun DescriptionScreenContent(
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun RenderImage(picture: String, name: String) {
+fun RenderImage(
+    picture: String,
+    name: String,
+    id: Int,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 64.dp)
     ) {
-        AsyncImage(
-            model = picture,
-            contentDescription = name,
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(MaterialTheme.shapes.medium),
-            contentScale = ContentScale.Crop
-        )
+        sharedTransitionScope.run {
+            AsyncImage(
+                model = picture,
+                contentDescription = name,
+                modifier = Modifier
+                    .sharedElement(
+                        rememberSharedContentState(key = "image_${id}"),
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        boundsTransform = { _, _ ->
+                            tween(durationMillis = 300)
+                        }
+                    )
+                    .fillMaxWidth()
+                    .clip(MaterialTheme.shapes.medium),
+                contentScale = ContentScale.Crop
+            )
+        }
     }
 }
 
@@ -332,9 +367,12 @@ fun RenderComments(
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun RenderImageAndInfo(
-    movieInfo: MovieInfo
+    movieInfo: MovieInfo,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
 ) {
     Row(
         modifier = Modifier
@@ -346,14 +384,23 @@ fun RenderImageAndInfo(
             modifier = Modifier
                 .padding(end = 16.dp),
         ) {
-            AsyncImage(
-                model = movieInfo.movieImage,
-                contentDescription = movieInfo.movieTitle,
-                modifier = Modifier
-                    .size(180.dp)
-                    .clip(MaterialTheme.shapes.medium),
-                contentScale = ContentScale.Crop
-            )
+            sharedTransitionScope.run {
+                AsyncImage(
+                    model = movieInfo.movieImage,
+                    contentDescription = movieInfo.movieTitle,
+                    modifier = Modifier
+                        .sharedElement(
+                            rememberSharedContentState(key = "image_${movieInfo.localId}"),
+                            animatedVisibilityScope = animatedVisibilityScope,
+                            boundsTransform = { _, _ ->
+                                tween(durationMillis = 300)
+                            }
+                        )
+                        .size(180.dp)
+                        .clip(MaterialTheme.shapes.medium),
+                    contentScale = ContentScale.Crop
+                )
+            }
         }
         Column {
             RenderTitle(movieInfo.movieTitle, TextAlign.Left)

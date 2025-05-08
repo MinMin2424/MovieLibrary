@@ -1,6 +1,9 @@
 package cz.cvut.fel.zan.movielibrary.ui.screens
 
-import androidx.compose.foundation.Image
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -43,8 +46,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -60,9 +61,12 @@ import cz.cvut.fel.zan.movielibrary.data.local.MovieInfo
 import cz.cvut.fel.zan.movielibrary.ui.utils.isLandscape
 import cz.cvut.fel.zan.movielibrary.ui.viewModel.MovieViewModel
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun MainScreen(
-    navController: NavController
+    navController: NavController,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope
 ) {
     Scaffold (
         topBar = { TopBarMainScreen(navController) },
@@ -77,7 +81,9 @@ fun MainScreen(
         ) {
             MainScreenContent(
                 paddingValues = innerPadding,
-                navController = navController
+                navController = navController,
+                sharedTransitionScope = sharedTransitionScope,
+                animatedVisibilityScope = animatedVisibilityScope
             )
         }
     }
@@ -133,23 +139,33 @@ fun TopBarMainScreen(navController: NavController) {
     )
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun MainScreenContent(
     paddingValues: PaddingValues,
-    navController: NavController
+    navController: NavController,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope
 ) {
     Column (
         modifier = Modifier
             .padding(paddingValues)
             .fillMaxSize()
     ) {
-        ListMovies(navController)
+        ListMovies(
+            navController = navController,
+            sharedTransitionScope = sharedTransitionScope,
+            animatedVisibilityScope = animatedVisibilityScope
+        )
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun ListMovies(
     navController: NavController,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     viewModel: MovieViewModel = viewModel()
 ) {
     val movies by viewModel.movies.collectAsState()
@@ -162,7 +178,9 @@ fun ListMovies(
             items(movies) {movie ->
                 MovieItem(
                     movieInfo = movie,
-                    navController = navController
+                    navController = navController,
+                    sharedTransitionScope = sharedTransitionScope,
+                    animatedVisibilityScope = animatedVisibilityScope
                 )
             }
         }
@@ -175,7 +193,9 @@ fun ListMovies(
             items(movies) {movie ->
                 MovieItem(
                     movieInfo = movie,
-                    navController = navController
+                    navController = navController,
+                    sharedTransitionScope = sharedTransitionScope,
+                    animatedVisibilityScope = animatedVisibilityScope
                 )
             }
         }
@@ -183,10 +203,13 @@ fun ListMovies(
 
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun MovieItem(
     movieInfo: MovieInfo,
-    navController: NavController
+    navController: NavController,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope
 ) {
     Column(
         modifier = Modifier
@@ -198,14 +221,23 @@ fun MovieItem(
             },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        AsyncImage(
-            model = movieInfo.movieImage,
-            contentDescription = movieInfo.movieTitle,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(150.dp)
-                .clip(RoundedCornerShape(12.dp))
-        )
+        sharedTransitionScope.run {
+            AsyncImage(
+                model = movieInfo.movieImage,
+                contentDescription = movieInfo.movieTitle,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .sharedElement(
+                        rememberSharedContentState(key = "image_${movieInfo.localId}"),
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        boundsTransform = { _, _ ->
+                            tween(durationMillis = 300)
+                        }
+                    )
+                    .size(150.dp)
+                    .clip(RoundedCornerShape(12.dp))
+            )
+        }
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = movieInfo.movieTitle,

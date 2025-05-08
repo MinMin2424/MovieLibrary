@@ -53,6 +53,9 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose) // Navigation
+    implementation(libs.androidx.foundation)
+    implementation(libs.androidx.animation)
+//    implementation(libs.ui)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)

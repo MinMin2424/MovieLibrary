@@ -16,4 +16,7 @@
     <string name="remove">Remove</string>
     <string name="cancel">Cancel</string>
     <string name="search">Search</string>
+    <string name="add_movie">Add movie</string>
+    <string name="splashscreen">SplashScreen</string>
+    <string name="alarm_add">Alarm add</string>
 </resources>

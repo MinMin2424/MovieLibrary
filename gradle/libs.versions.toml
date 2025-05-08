@@ -1,7 +1,9 @@
 [versions]
 agp = "8.8.1"
+animation = "1.7.0"
 converterGson = "2.9.0"
 datastorePreferences = "1.1.4"
+foundation = "1.7.0"
 gson = "2.10.1"
 jetbrainsKotlinxCoroutinesCoreVersion = "1.7.3"
 kotlin = "2.0.0"
@@ -19,11 +21,14 @@ coil = "3.1.0"
 ksp = "2.0.0-1.0.24"
 room = "2.6.1"
 squareupRetrofit = "2.11.0"
+ui = "1.7.0"
 workRuntimeKtxVersion = "2.8.1"
 
 [libraries]
+androidx-animation = { module = "androidx.compose.animation:animation", version.ref = "animation" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
+androidx-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "foundation" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
@@ -51,6 +56,7 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 org-jetbrains-kotlinx-kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "jetbrainsKotlinxCoroutinesCoreVersion" }
 retrofit2-kotlinx-serialization-converter = { module = "com.squareup.retrofit2:converter-kotlinx-serialization", version.ref = "squareupRetrofit" }
 squareup-retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "squareupRetrofit" }
+ui = { module = "androidx.compose.ui:ui", version.ref = "ui" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
